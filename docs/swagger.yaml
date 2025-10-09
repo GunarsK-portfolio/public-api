@@ -1,0 +1,259 @@
+basePath: /api/v1
+definitions:
+  models.Certification:
+    properties:
+      created_at:
+        type: string
+      credential_id:
+        type: string
+      credential_url:
+        type: string
+      display_order:
+        type: integer
+      expiry_date:
+        type: string
+      id:
+        type: integer
+      issue_date:
+        type: string
+      issuer:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.Image:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      display_order:
+        type: integer
+      id:
+        type: integer
+      miniature_project_id:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+    type: object
+  models.MiniatureProject:
+    properties:
+      completed_date:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      display_order:
+        type: integer
+      id:
+        type: integer
+      images:
+        items:
+          $ref: '#/definitions/models.Image'
+        type: array
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.Profile:
+    properties:
+      avatar_url:
+        type: string
+      bio:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      location:
+        type: string
+      phone:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.WorkExperience:
+    properties:
+      company:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      display_order:
+        type: integer
+      end_date:
+        type: string
+      id:
+        type: integer
+      is_current:
+        type: boolean
+      position:
+        type: string
+      start_date:
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:8082
+info:
+  contact: {}
+  description: Public read-only API for portfolio data
+  title: Portfolio Public API
+  version: "1.0"
+paths:
+  /certifications:
+    get:
+      description: Get list of all certifications
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Certification'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all certifications
+      tags:
+      - certifications
+  /experience:
+    get:
+      description: Get list of all work experience entries
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.WorkExperience'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all work experience
+      tags:
+      - experience
+  /health:
+    get:
+      description: Check if service is healthy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - health
+  /miniatures:
+    get:
+      description: Get list of all miniature painting projects with images
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MiniatureProject'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all miniature projects
+      tags:
+      - miniatures
+  /miniatures/{id}:
+    get:
+      description: Get detailed information about a specific miniature project
+      parameters:
+      - description: Miniature Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MiniatureProject'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get miniature project by ID
+      tags:
+      - miniatures
+  /profile:
+    get:
+      description: Get the portfolio owner's profile information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Profile'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get profile information
+      tags:
+      - profile
+swagger: "2.0"
