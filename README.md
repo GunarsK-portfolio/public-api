@@ -125,7 +125,11 @@ public-api/
 ### Get Profile
 
 ```bash
+# Direct access (standalone)
 curl http://localhost:8082/api/v1/profile
+
+# Via Traefik (infrastructure setup)
+curl http://localhost/api/v1/profile
 ```
 
 Response:
@@ -147,7 +151,11 @@ Response:
 ### Get Work Experience
 
 ```bash
+# Direct access (standalone)
 curl http://localhost:8082/api/v1/experience
+
+# Via Traefik (infrastructure setup)
+curl http://localhost/api/v1/experience
 ```
 
 Response:
@@ -171,7 +179,11 @@ Response:
 ### Get Miniature Projects
 
 ```bash
+# Direct access (standalone)
 curl http://localhost:8082/api/v1/miniatures
+
+# Via Traefik (infrastructure setup)
+curl http://localhost/api/v1/miniatures
 ```
 
 Response:
@@ -204,7 +216,11 @@ Response:
 ### Get Specific Miniature Project
 
 ```bash
+# Direct access (standalone)
 curl http://localhost:8082/api/v1/miniatures/1
+
+# Via Traefik (infrastructure setup)
+curl http://localhost/api/v1/miniatures/1
 ```
 
 ## Development
