@@ -1,336 +1,174 @@
-# Portfolio Public API
+# Public API
 
-Read-only REST API for serving public portfolio data. Provides endpoints for profile information, work experience, certifications, and miniature painting projects.
+RESTful API for public portfolio content access.
 
 ## Features
 
-- Read-only REST API
-- CORS enabled for public access
-- Swagger API documentation
-- S3/MinIO integration for image URLs
-- Docker support
-- GORM with PostgreSQL
+- Read-only public portfolio content
+- Projects, skills, experience endpoints
+- Image serving via MinIO/S3
+- RESTful API with Swagger documentation
+- Health check endpoint
 
-## API Endpoints
+## Tech Stack
 
-### Profile
-- `GET /api/v1/profile` - Get profile information
+- **Language**: Go 1.25
+- **Framework**: Gin
+- **Database**: PostgreSQL (GORM)
+- **Storage**: MinIO (S3-compatible)
+- **Documentation**: Swagger/OpenAPI
 
-### Experience
-- `GET /api/v1/experience` - List all work experience
-
-### Certifications
-- `GET /api/v1/certifications` - List all certifications
-
-### Miniatures
-- `GET /api/v1/miniatures` - List all miniature projects (with images)
-- `GET /api/v1/miniatures/:id` - Get specific miniature project details
-
-### Health
-- `GET /api/v1/health` - Service health check
-
-### Documentation
-- `GET /swagger/index.html` - Swagger UI
-
-## Quick Start
-
-### Prerequisites
+## Prerequisites
 
 - Go 1.25+
-- PostgreSQL 18+
-- MinIO or S3
-- [Task](https://taskfile.dev/installation/) (task runner)
-- Docker (optional)
-
-### Local Development (without Docker)
-
-```bash
-# Install dependencies
-go mod download
-
-# Copy environment file
-cp .env.example .env
-
-# Edit .env with your local settings
-# (Defaults should work if you have postgres/minio running locally)
-
-# Generate Swagger docs
-task swagger
-
-# Run the service
-task run
-
-# Or debug in VS Code (F5)
-```
-
-### Local Development (with Docker)
-
-```bash
-# Start all services (PostgreSQL, MinIO, Public API)
-docker-compose up -d
-
-# View logs
-docker-compose logs -f public-api
-
-# Stop services
-docker-compose down
-```
-
-## Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| PORT | Service port | 8082 |
-| DB_HOST | PostgreSQL host | localhost |
-| DB_PORT | PostgreSQL port | 5432 |
-| DB_USER | Database user | portfolio_user |
-| DB_PASSWORD | Database password | portfolio_pass |
-| DB_NAME | Database name | portfolio |
-| S3_ENDPOINT | S3/MinIO endpoint | http://localhost:9000 |
-| S3_ACCESS_KEY | S3 access key | minioadmin |
-| S3_SECRET_KEY | S3 secret key | minioadmin |
-| S3_BUCKET | S3 bucket name | images |
-| S3_USE_SSL | Use SSL for S3 | false |
+- PostgreSQL (or use Docker Compose)
+- MinIO (or use Docker Compose)
 
 ## Project Structure
 
 ```
 public-api/
 ├── cmd/
-│   └── api/
-│       └── main.go              # Application entry point
+│   └── api/              # Application entrypoint
 ├── internal/
-│   ├── config/
-│   │   └── config.go            # Configuration
-│   ├── database/
-│   │   └── database.go          # Database connection
-│   ├── handlers/
-│   │   └── handlers.go          # HTTP handlers
-│   ├── models/
-│   │   └── models.go            # Data models
-│   ├── repository/
-│   │   └── repository.go        # Database queries
-│   └── storage/
-│       └── s3.go                # S3 client (future)
-├── docs/                        # Swagger documentation
-├── Dockerfile
-├── docker-compose.yml
-├── Taskfile.yml
-├── go.mod
-└── README.md
+│   ├── config/           # Configuration
+│   ├── database/         # Database connection
+│   ├── handlers/         # HTTP handlers
+│   ├── models/           # Data models
+│   ├── repository/       # Data access layer
+│   ├── service/          # Business logic
+│   └── storage/          # S3/MinIO integration
+└── docs/                 # Swagger documentation
 ```
 
-## API Usage Examples
+## Quick Start
 
-### Get Profile
+### Using Docker Compose
 
 ```bash
-# Direct access (standalone)
-curl http://localhost:8082/api/v1/profile
-
-# Via Traefik (infrastructure setup)
-curl http://localhost/api/v1/profile
+docker-compose up -d
 ```
 
-Response:
-```json
-{
-  "id": 1,
-  "full_name": "Your Name",
-  "title": "Software Engineer",
-  "bio": "Passionate about software development...",
-  "email": "your.email@example.com",
-  "phone": "+1234567890",
-  "location": "Your City, Country",
-  "avatar_url": "https://...",
-  "created_at": "2024-01-01T00:00:00Z",
-  "updated_at": "2024-01-01T00:00:00Z"
-}
-```
+### Local Development
 
-### Get Work Experience
-
+1. Copy environment file:
 ```bash
-# Direct access (standalone)
-curl http://localhost:8082/api/v1/experience
-
-# Via Traefik (infrastructure setup)
-curl http://localhost/api/v1/experience
+cp .env.example .env
 ```
 
-Response:
-```json
-[
-  {
-    "id": 1,
-    "company": "Example Company",
-    "position": "Senior Developer",
-    "description": "Led development of key features...",
-    "start_date": "2020-01-01",
-    "end_date": null,
-    "is_current": true,
-    "display_order": 1,
-    "created_at": "2024-01-01T00:00:00Z",
-    "updated_at": "2024-01-01T00:00:00Z"
-  }
-]
+2. Update `.env` with your configuration:
+```env
+PORT=8082
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=portfolio_user
+DB_PASSWORD=portfolio_pass
+DB_NAME=portfolio
+S3_ENDPOINT=http://localhost:9000
+S3_ACCESS_KEY=minioadmin
+S3_SECRET_KEY=minioadmin
+S3_BUCKET=images
+S3_USE_SSL=false
 ```
 
-### Get Miniature Projects
-
+3. Start infrastructure (if not running):
 ```bash
-# Direct access (standalone)
-curl http://localhost:8082/api/v1/miniatures
-
-# Via Traefik (infrastructure setup)
-curl http://localhost/api/v1/miniatures
+# From infrastructure directory
+docker-compose up -d postgres minio flyway
 ```
 
-Response:
-```json
-[
-  {
-    "id": 1,
-    "title": "Space Marine Squad",
-    "description": "Painted a full squad...",
-    "completed_date": "2024-01-15",
-    "display_order": 1,
-    "images": [
-      {
-        "id": 1,
-        "miniature_project_id": 1,
-        "title": "Front view",
-        "description": "Squad front view",
-        "url": "https://...",
-        "display_order": 1,
-        "created_at": "2024-01-01T00:00:00Z",
-        "updated_at": "2024-01-01T00:00:00Z"
-      }
-    ],
-    "created_at": "2024-01-01T00:00:00Z",
-    "updated_at": "2024-01-01T00:00:00Z"
-  }
-]
-```
-
-### Get Specific Miniature Project
-
+4. Run the service:
 ```bash
-# Direct access (standalone)
-curl http://localhost:8082/api/v1/miniatures/1
-
-# Via Traefik (infrastructure setup)
-curl http://localhost/api/v1/miniatures/1
+task run
+# or
+go run cmd/api/main.go
 ```
+
+## Available Commands
+
+Using Task:
+```bash
+task run           # Run the service
+task build         # Build binary
+task test          # Run tests
+task swagger       # Generate Swagger docs
+task clean         # Clean build artifacts
+task docker-build  # Build Docker image
+task docker-run    # Run with docker-compose
+task docker-logs   # View logs
+```
+
+Using Go directly:
+```bash
+go run cmd/api/main.go       # Run
+go build -o bin/public-api cmd/api/main.go  # Build
+go test ./...                # Test
+```
+
+## API Endpoints
+
+Base URL: `http://localhost:8082/api/v1`
+
+### Health Check
+- `GET /health` - Service health status
+
+### Public Endpoints
+- `GET /projects` - List all projects
+- `GET /projects/:id` - Get project details
+- `GET /skills` - List all skills
+- `GET /experience` - List work experience
+- `GET /about` - Get about information
+
+## Swagger Documentation
+
+When running, Swagger UI is available at:
+- `http://localhost:8082/swagger/index.html`
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Server port | `8082` |
+| `DB_HOST` | PostgreSQL host | `localhost` |
+| `DB_PORT` | PostgreSQL port | `5432` |
+| `DB_USER` | Database user | `portfolio_user` |
+| `DB_PASSWORD` | Database password | `portfolio_pass` |
+| `DB_NAME` | Database name | `portfolio` |
+| `S3_ENDPOINT` | MinIO/S3 endpoint | `http://localhost:9000` |
+| `S3_ACCESS_KEY` | MinIO access key | `minioadmin` |
+| `S3_SECRET_KEY` | MinIO secret key | `minioadmin` |
+| `S3_BUCKET` | S3 bucket name | `images` |
+| `S3_USE_SSL` | Use SSL for S3 | `false` |
 
 ## Development
 
-### Generate Swagger Documentation
-
-```bash
-# Install swag (one-time)
-go install github.com/swaggo/swag/cmd/swag@latest
-
-# Generate docs
-task swagger
-
-# Commit generated docs
-git add docs/
-git commit -m "Update swagger docs"
-```
-
-### Run Tests
+### Running Tests
 
 ```bash
 task test
+# or
+go test ./...
 ```
 
-### Build Binary
+### Generating Swagger Docs
+
+```bash
+task swagger
+# or
+swag init -g cmd/api/main.go -o docs
+```
+
+### Building
 
 ```bash
 task build
+# or
+go build -o bin/public-api cmd/api/main.go
 ```
 
-## Docker
+## Integration
 
-### Build Image
-
-```bash
-task docker-build
-```
-
-### Run with Docker Compose
-
-```bash
-task docker-run
-```
-
-### View Logs
-
-```bash
-task docker-logs
-```
-
-## CORS Configuration
-
-The API has CORS enabled to allow cross-origin requests from the public web frontend:
-
-```go
-Access-Control-Allow-Origin: *
-Access-Control-Allow-Methods: GET, OPTIONS
-Access-Control-Allow-Headers: Content-Type
-```
-
-For production, restrict the origin to your actual domain.
-
-## Database
-
-This service uses the shared portfolio database. Make sure migrations have been run:
-
-```bash
-cd ../database
-docker-compose run flyway migrate
-```
-
-## Troubleshooting
-
-### Database Connection Failed
-
-```bash
-# Check PostgreSQL is running
-docker-compose ps postgres
-
-# Test connection
-psql postgresql://portfolio_user:portfolio_pass@localhost:5432/portfolio
-```
-
-### MinIO Connection Issues
-
-```bash
-# Check MinIO is running
-docker-compose ps minio
-
-# Access MinIO console
-open http://localhost:9001
-```
-
-### Port Already in Use
-
-```bash
-# Find process using port 8082
-lsof -i :8082
-
-# Kill process
-kill -9 <PID>
-```
-
-## Related Repositories
-
-- [infrastructure](https://github.com/GunarsK-portfolio/infrastructure)
-- [database](https://github.com/GunarsK-portfolio/database)
-- [public-web](https://github.com/GunarsK-portfolio/public-web)
-- [auth-service](https://github.com/GunarsK-portfolio/auth-service)
-- [admin-api](https://github.com/GunarsK-portfolio/admin-api)
+This API is consumed by the public-web frontend to display portfolio content.
 
 ## License
 
