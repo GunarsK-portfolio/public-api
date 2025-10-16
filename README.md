@@ -5,8 +5,8 @@ RESTful API for public portfolio content access.
 ## Features
 
 - Read-only public portfolio content
-- Projects, skills, experience endpoints
-- Image serving via MinIO/S3
+- Projects, skills, experience, profile endpoints
+- File serving via Files API
 - RESTful API with Swagger documentation
 - Health check endpoint
 
@@ -15,14 +15,14 @@ RESTful API for public portfolio content access.
 - **Language**: Go 1.25
 - **Framework**: Gin
 - **Database**: PostgreSQL (GORM)
-- **Storage**: MinIO (S3-compatible)
+- **Storage**: Files API (for images/documents)
 - **Documentation**: Swagger/OpenAPI
 
 ## Prerequisites
 
 - Go 1.25+
 - PostgreSQL (or use Docker Compose)
-- MinIO (or use Docker Compose)
+- Files API running (or use Docker Compose)
 
 ## Project Structure
 
@@ -35,9 +35,7 @@ public-api/
 │   ├── database/         # Database connection
 │   ├── handlers/         # HTTP handlers
 │   ├── models/           # Data models
-│   ├── repository/       # Data access layer
-│   ├── service/          # Business logic
-│   └── storage/          # S3/MinIO integration
+│   └── repository/       # Data access layer
 └── docs/                 # Swagger documentation
 ```
 
@@ -61,20 +59,16 @@ cp .env.example .env
 PORT=8082
 DB_HOST=localhost
 DB_PORT=5432
-DB_USER=portfolio_user
-DB_PASSWORD=portfolio_pass
+DB_USER=portfolio_public
+DB_PASSWORD=portfolio_public_dev_pass
 DB_NAME=portfolio
-S3_ENDPOINT=http://localhost:9000
-S3_ACCESS_KEY=minioadmin
-S3_SECRET_KEY=minioadmin
-S3_BUCKET=images
-S3_USE_SSL=false
+FILES_API_URL=http://localhost:8085
 ```
 
 3. Start infrastructure (if not running):
 ```bash
 # From infrastructure directory
-docker-compose up -d postgres minio flyway
+docker-compose up -d postgres files-api flyway
 ```
 
 4. Run the service:
@@ -113,11 +107,15 @@ Base URL: `http://localhost:8082/api/v1`
 - `GET /health` - Service health status
 
 ### Public Endpoints
+- `GET /profile` - Get profile information
 - `GET /projects` - List all projects
 - `GET /projects/:id` - Get project details
-- `GET /skills` - List all skills
+- `GET /skills` - List all skills grouped by type
 - `GET /experience` - List work experience
-- `GET /about` - Get about information
+- `GET /certifications` - List certifications
+- `GET /miniatures/themes` - List miniature painting themes
+- `GET /miniatures/projects` - List all miniature projects
+- `GET /miniatures/projects/:id` - Get miniature project details
 
 ## Swagger Documentation
 
@@ -126,19 +124,15 @@ When running, Swagger UI is available at:
 
 ## Environment Variables
 
-| Variable | Description | Default |
+| Variable | Description | Example |
 |----------|-------------|---------|
 | `PORT` | Server port | `8082` |
 | `DB_HOST` | PostgreSQL host | `localhost` |
 | `DB_PORT` | PostgreSQL port | `5432` |
-| `DB_USER` | Database user | `portfolio_user` |
-| `DB_PASSWORD` | Database password | `portfolio_pass` |
+| `DB_USER` | Database user (read-only) | `portfolio_public` |
+| `DB_PASSWORD` | Database password | `portfolio_public_dev_pass` |
 | `DB_NAME` | Database name | `portfolio` |
-| `S3_ENDPOINT` | MinIO/S3 endpoint | `http://localhost:9000` |
-| `S3_ACCESS_KEY` | MinIO access key | `minioadmin` |
-| `S3_SECRET_KEY` | MinIO secret key | `minioadmin` |
-| `S3_BUCKET` | S3 bucket name | `images` |
-| `S3_USE_SSL` | Use SSL for S3 | `false` |
+| `FILES_API_URL` | Files API endpoint | `http://localhost:8085` |
 
 ## Development
 

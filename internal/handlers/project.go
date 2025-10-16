@@ -1,0 +1,52 @@
+package handlers
+
+import (
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+)
+
+// GetProjects godoc
+// @Summary Get all portfolio projects
+// @Description Get list of all portfolio projects with technologies
+// @Tags projects
+// @Produce json
+// @Success 200 {array} models.PortfolioProject
+// @Failure 500 {object} map[string]string
+// @Router /projects [get]
+func (h *Handler) GetProjects(c *gin.Context) {
+	projects, err := h.repo.GetAllProjects()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch projects"})
+		return
+	}
+	c.JSON(http.StatusOK, projects)
+}
+
+// GetProjectByID godoc
+// @Summary Get portfolio project by ID
+// @Description Get detailed information about a specific portfolio project
+// @Tags projects
+// @Produce json
+// @Param id path int true "Project ID"
+// @Success 200 {object} models.PortfolioProject
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /projects/{id} [get]
+func (h *Handler) GetProjectByID(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+
+	project, err := h.repo.GetProjectByID(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "project not found"})
+		return
+	}
+	c.JSON(http.StatusOK, project)
+}

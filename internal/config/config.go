@@ -3,17 +3,13 @@ package config
 import "os"
 
 type Config struct {
-	DBHost       string
-	DBPort       string
-	DBUser       string
-	DBPassword   string
-	DBName       string
-	S3Endpoint   string
-	S3AccessKey  string
-	S3SecretKey  string
-	S3Bucket     string
-	S3UseSSL     string
-	Port         string
+	DBHost      string
+	DBPort      string
+	DBUser      string
+	DBPassword  string
+	DBName      string
+	Port        string
+	FilesAPIURL string
 }
 
 func Load() *Config {
@@ -23,20 +19,9 @@ func Load() *Config {
 		DBUser:      getEnvRequired("DB_USER"),
 		DBPassword:  getEnvRequired("DB_PASSWORD"),
 		DBName:      getEnvRequired("DB_NAME"),
-		S3Endpoint:  getEnvRequired("S3_ENDPOINT"),
-		S3AccessKey: getEnvRequired("S3_ACCESS_KEY"),
-		S3SecretKey: getEnvRequired("S3_SECRET_KEY"),
-		S3Bucket:    getEnvRequired("S3_BUCKET"),
-		S3UseSSL:    getEnv("S3_USE_SSL", "false"),
-		Port:        getEnv("PORT", "8082"),
+		Port:        getEnvRequired("PORT"),
+		FilesAPIURL: getEnvRequired("FILES_API_URL"),
 	}
-}
-
-func getEnv(key, defaultValue string) string {
-	if value := os.Getenv(key); value != "" {
-		return value
-	}
-	return defaultValue
 }
 
 func getEnvRequired(key string) string {
