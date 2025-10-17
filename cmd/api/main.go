@@ -30,7 +30,7 @@ func main() {
 	}
 
 	// Initialize repository
-	repo := repository.New(db)
+	repo := repository.New(db, cfg.FilesAPIURL)
 
 	// Initialize handlers
 	handler := handlers.New(repo)
@@ -59,8 +59,12 @@ func main() {
 		v1.GET("/profile", handler.GetProfile)
 		v1.GET("/experience", handler.GetWorkExperience)
 		v1.GET("/certifications", handler.GetCertifications)
+		v1.GET("/skills", handler.GetSkills)
+		v1.GET("/projects", handler.GetProjects)
+		v1.GET("/projects/:id", handler.GetProjectByID)
 		v1.GET("/miniatures", handler.GetMiniatures)
 		v1.GET("/miniatures/:id", handler.GetMiniatureByID)
+		v1.GET("/miniatures/themes", handler.GetMiniatureThemes)
 	}
 
 	// Swagger documentation
