@@ -62,7 +62,7 @@ DB_PORT=5432
 DB_USER=portfolio_public
 DB_PASSWORD=portfolio_public_dev_pass
 DB_NAME=portfolio
-FILES_API_URL=http://localhost:8085
+FILES_API_URL=http://localhost:8085/api/v1
 ```
 
 3. Start infrastructure (if not running):
@@ -132,7 +132,7 @@ When running, Swagger UI is available at:
 | `DB_USER` | Database user (read-only) | `portfolio_public` |
 | `DB_PASSWORD` | Database password | `portfolio_public_dev_pass` |
 | `DB_NAME` | Database name | `portfolio` |
-| `FILES_API_URL` | Files API endpoint | `http://localhost:8085` |
+| `FILES_API_URL` | Files API base URL | `http://localhost:8085/api/v1` |
 
 ## Development
 
