@@ -1,8 +1,7 @@
 package repository
 
 import (
-	"fmt"
-
+	"github.com/GunarsK-portfolio/portfolio-common/utils"
 	"github.com/GunarsK-portfolio/public-api/internal/models"
 	"gorm.io/gorm"
 )
@@ -23,7 +22,7 @@ func (r *repository) GetAllMiniatureProjects() ([]models.MiniatureProject, error
 		for j, file := range projects[i].Files {
 			url := ""
 			if file.File != nil {
-				url = fmt.Sprintf("%s/files/%s/%s", r.filesAPIURL, file.File.FileType, file.File.S3Key)
+				url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
 			}
 			projects[i].Images[j] = models.Image{
 				ID:      file.ID,
@@ -53,7 +52,7 @@ func (r *repository) GetMiniatureProjectByID(id int64) (*models.MiniatureProject
 	for j, file := range project.Files {
 		url := ""
 		if file.File != nil {
-			url = fmt.Sprintf("%s/files/%s/%s", r.filesAPIURL, file.File.FileType, file.File.S3Key)
+			url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
 		}
 		project.Images[j] = models.Image{
 			ID:      file.ID,

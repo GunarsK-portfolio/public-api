@@ -2,111 +2,236 @@ basePath: /api/v1
 definitions:
   models.Certification:
     properties:
-      created_at:
+      createdAt:
         type: string
-      credential_id:
+      credentialId:
         type: string
-      credential_url:
+      credentialUrl:
         type: string
-      display_order:
-        type: integer
-      expiry_date:
+      expiryDate:
         type: string
       id:
         type: integer
-      issue_date:
+      issueDate:
         type: string
       issuer:
         type: string
       name:
         type: string
-      updated_at:
+      updatedAt:
         type: string
     type: object
   models.Image:
     properties:
-      created_at:
+      caption:
         type: string
-      description:
-        type: string
-      display_order:
-        type: integer
       id:
         type: integer
-      miniature_project_id:
-        type: integer
-      title:
-        type: string
-      updated_at:
-        type: string
       url:
         type: string
     type: object
   models.MiniatureProject:
     properties:
-      completed_date:
+      completedDate:
         type: string
-      created_at:
+      createdAt:
         type: string
       description:
         type: string
-      display_order:
+      difficulty:
+        type: string
+      displayOrder:
         type: integer
       id:
         type: integer
       images:
+        description: Computed for frontend
         items:
           $ref: '#/definitions/models.Image'
         type: array
+      manufacturer:
+        type: string
+      name:
+        description: Frontend expects "name"
+        type: string
+      paints:
+        description: Loaded separately from junction table
+        items:
+          $ref: '#/definitions/models.Paint'
+        type: array
+      scale:
+        type: string
+      techniques:
+        description: Loaded separately from junction table
+        items:
+          type: string
+        type: array
+      themeId:
+        type: integer
+      timeSpent:
+        description: Hours as decimal
+        type: number
+      updatedAt:
+        type: string
+    type: object
+  models.MiniatureTheme:
+    properties:
+      coverImage:
+        description: Computed URL field
+        type: string
+      coverImageId:
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      displayOrder:
+        type: integer
+      id:
+        type: integer
+      miniatures:
+        items:
+          $ref: '#/definitions/models.MiniatureProject'
+        type: array
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.Paint:
+    properties:
+      color:
+        description: Hex color code
+        type: string
+      manufacturer:
+        type: string
+      name:
+        type: string
+    type: object
+  models.PortfolioProject:
+    properties:
+      category:
+        type: string
+      challenges:
+        items:
+          type: string
+        type: array
+      createdAt:
+        type: string
+      description:
+        type: string
+      displayOrder:
+        type: integer
+      endDate:
+        type: string
+      featured:
+        type: boolean
+      features:
+        items:
+          type: string
+        type: array
+      githubUrl:
+        type: string
+      id:
+        type: integer
+      imageUrl:
+        description: Computed field
+        type: string
+      isOngoing:
+        type: boolean
+      learnings:
+        items:
+          type: string
+        type: array
+      liveUrl:
+        type: string
+      longDescription:
+        type: string
+      role:
+        type: string
+      startDate:
+        type: string
+      teamSize:
+        type: integer
+      technologies:
+        items:
+          $ref: '#/definitions/models.Skill'
+        type: array
       title:
         type: string
-      updated_at:
+      updatedAt:
         type: string
     type: object
   models.Profile:
     properties:
-      avatar_url:
+      avatarUrl:
+        description: Computed field
         type: string
-      bio:
-        type: string
-      created_at:
+      createdAt:
         type: string
       email:
-        type: string
-      full_name:
         type: string
       id:
         type: integer
       location:
+        description: Optional
+        type: string
+      name:
+        description: Frontend expects "name"
         type: string
       phone:
+        description: Optional
+        type: string
+      resumeUrl:
+        description: Computed field
+        type: string
+      tagline:
+        description: Frontend expects "tagline" for short bio
         type: string
       title:
         type: string
-      updated_at:
+      updatedAt:
+        type: string
+    type: object
+  models.Skill:
+    properties:
+      createdAt:
+        type: string
+      displayOrder:
+        type: integer
+      id:
+        type: integer
+      isVisible:
+        type: boolean
+      skill:
+        type: string
+      skillTypeId:
+        type: integer
+      type:
+        description: Computed field for frontend
+        type: string
+      updatedAt:
         type: string
     type: object
   models.WorkExperience:
     properties:
       company:
         type: string
-      created_at:
+      createdAt:
         type: string
       description:
         type: string
-      display_order:
-        type: integer
-      end_date:
+      endDate:
         type: string
       id:
         type: integer
-      is_current:
+      isCurrent:
         type: boolean
       position:
         type: string
-      start_date:
+      startDate:
         type: string
-      updated_at:
+      updatedAt:
         type: string
     type: object
 host: localhost:8082
@@ -231,6 +356,27 @@ paths:
       summary: Get miniature project by ID
       tags:
       - miniatures
+  /miniatures/themes:
+    get:
+      description: Get list of all miniature themes with their associated projects
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MiniatureTheme'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all miniature themes with projects
+      tags:
+      - miniatures
   /profile:
     get:
       description: Get the portfolio owner's profile information
@@ -256,4 +402,83 @@ paths:
       summary: Get profile information
       tags:
       - profile
+  /projects:
+    get:
+      description: Get list of all portfolio projects with technologies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.PortfolioProject'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all portfolio projects
+      tags:
+      - projects
+  /projects/{id}:
+    get:
+      description: Get detailed information about a specific portfolio project
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PortfolioProject'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get portfolio project by ID
+      tags:
+      - projects
+  /skills:
+    get:
+      description: Get list of all visible skills organized by category
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Skill'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all skills
+      tags:
+      - skills
 swagger: "2.0"

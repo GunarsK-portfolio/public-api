@@ -128,6 +128,38 @@
                 }
             }
         },
+        "/miniatures/themes": {
+            "get": {
+                "description": "Get list of all miniature themes with their associated projects",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "miniatures"
+                ],
+                "summary": "Get all miniature themes with projects",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.MiniatureTheme"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/miniatures/{id}": {
             "get": {
                 "description": "Get detailed information about a specific miniature project",
@@ -221,31 +253,148 @@
                     }
                 }
             }
+        },
+        "/projects": {
+            "get": {
+                "description": "Get list of all portfolio projects with technologies",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Get all portfolio projects",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.PortfolioProject"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{id}": {
+            "get": {
+                "description": "Get detailed information about a specific portfolio project",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Get portfolio project by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.PortfolioProject"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/skills": {
+            "get": {
+                "description": "Get list of all visible skills organized by category",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "skills"
+                ],
+                "summary": "Get all skills",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Skill"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
         "models.Certification": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
-                "credential_id": {
+                "credentialId": {
                     "type": "string"
                 },
-                "credential_url": {
+                "credentialUrl": {
                     "type": "string"
                 },
-                "display_order": {
-                    "type": "integer"
-                },
-                "expiry_date": {
+                "expiryDate": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "issue_date": {
+                "issueDate": {
                     "type": "string"
                 },
                 "issuer": {
@@ -254,7 +403,7 @@
                 "name": {
                     "type": "string"
                 },
-                "updated_at": {
+                "updatedAt": {
                     "type": "string"
                 }
             }
@@ -262,26 +411,11 @@
         "models.Image": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "caption": {
                     "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "display_order": {
-                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
-                },
-                "miniature_project_id": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
                 },
                 "url": {
                     "type": "string"
@@ -291,31 +425,195 @@
         "models.MiniatureProject": {
             "type": "object",
             "properties": {
-                "completed_date": {
+                "completedDate": {
                     "type": "string"
                 },
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
                 },
-                "display_order": {
+                "difficulty": {
+                    "type": "string"
+                },
+                "displayOrder": {
                     "type": "integer"
                 },
                 "id": {
                     "type": "integer"
                 },
                 "images": {
+                    "description": "Computed for frontend",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.Image"
                     }
                 },
+                "manufacturer": {
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Frontend expects \"name\"",
+                    "type": "string"
+                },
+                "paints": {
+                    "description": "Loaded separately from junction table",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Paint"
+                    }
+                },
+                "scale": {
+                    "type": "string"
+                },
+                "techniques": {
+                    "description": "Loaded separately from junction table",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "themeId": {
+                    "type": "integer"
+                },
+                "timeSpent": {
+                    "description": "Hours as decimal",
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MiniatureTheme": {
+            "type": "object",
+            "properties": {
+                "coverImage": {
+                    "description": "Computed URL field",
+                    "type": "string"
+                },
+                "coverImageId": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "displayOrder": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "miniatures": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MiniatureProject"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Paint": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "description": "Hex color code",
+                    "type": "string"
+                },
+                "manufacturer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.PortfolioProject": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "challenges": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "displayOrder": {
+                    "type": "integer"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "featured": {
+                    "type": "boolean"
+                },
+                "features": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "githubUrl": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "imageUrl": {
+                    "description": "Computed field",
+                    "type": "string"
+                },
+                "isOngoing": {
+                    "type": "boolean"
+                },
+                "learnings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "liveUrl": {
+                    "type": "string"
+                },
+                "longDescription": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "teamSize": {
+                    "type": "integer"
+                },
+                "technologies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Skill"
+                    }
+                },
                 "title": {
                     "type": "string"
                 },
-                "updated_at": {
+                "updatedAt": {
                     "type": "string"
                 }
             }
@@ -323,34 +621,73 @@
         "models.Profile": {
             "type": "object",
             "properties": {
-                "avatar_url": {
+                "avatarUrl": {
+                    "description": "Computed field",
                     "type": "string"
                 },
-                "bio": {
-                    "type": "string"
-                },
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "email": {
-                    "type": "string"
-                },
-                "full_name": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
                 "location": {
+                    "description": "Optional",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Frontend expects \"name\"",
                     "type": "string"
                 },
                 "phone": {
+                    "description": "Optional",
+                    "type": "string"
+                },
+                "resumeUrl": {
+                    "description": "Computed field",
+                    "type": "string"
+                },
+                "tagline": {
+                    "description": "Frontend expects \"tagline\" for short bio",
                     "type": "string"
                 },
                 "title": {
                     "type": "string"
                 },
-                "updated_at": {
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Skill": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "displayOrder": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isVisible": {
+                    "type": "boolean"
+                },
+                "skill": {
+                    "type": "string"
+                },
+                "skillTypeId": {
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "Computed field for frontend",
+                    "type": "string"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }
@@ -361,31 +698,28 @@
                 "company": {
                     "type": "string"
                 },
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
                 },
-                "display_order": {
-                    "type": "integer"
-                },
-                "end_date": {
+                "endDate": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "is_current": {
+                "isCurrent": {
                     "type": "boolean"
                 },
                 "position": {
                     "type": "string"
                 },
-                "start_date": {
+                "startDate": {
                     "type": "string"
                 },
-                "updated_at": {
+                "updatedAt": {
                     "type": "string"
                 }
             }
