@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+
 	"github.com/GunarsK-portfolio/public-api/internal/models"
 )
 
