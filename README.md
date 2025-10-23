@@ -1,5 +1,7 @@
 # Public API
 
+![CI](https://github.com/GunarsK-portfolio/public-api/workflows/CI/badge.svg)
+
 RESTful API for public portfolio content access.
 
 ## Features
@@ -68,7 +70,7 @@ FILES_API_URL=http://localhost:8085/api/v1
 3. Start infrastructure (if not running):
 ```bash
 # From infrastructure directory
-docker-compose up -d postgres files-api flyway
+docker-compose up -d postgres flyway
 ```
 
 4. Run the service:
@@ -82,14 +84,18 @@ go run cmd/api/main.go
 
 Using Task:
 ```bash
-task run           # Run the service
-task build         # Build binary
-task test          # Run tests
-task swagger       # Generate Swagger docs
-task clean         # Clean build artifacts
-task docker-build  # Build Docker image
-task docker-run    # Run with docker-compose
-task docker-logs   # View logs
+task run            # Run the service
+task build          # Build binary
+task fmt            # Format code
+task test           # Run tests
+task test-coverage  # Run tests with coverage report
+task lint           # Run golangci-lint
+task vuln           # Check for vulnerabilities
+task ci             # Run all CI checks locally
+task swagger        # Generate Swagger docs
+task clean          # Clean build artifacts
+task docker-build   # Build Docker image
+task install-tools  # Install dev tools (golangci-lint, govulncheck, etc.)
 ```
 
 Using Go directly:
@@ -133,32 +139,6 @@ When running, Swagger UI is available at:
 | `DB_PASSWORD` | Database password | `portfolio_public_dev_pass` |
 | `DB_NAME` | Database name | `portfolio` |
 | `FILES_API_URL` | Files API base URL | `http://localhost:8085/api/v1` |
-
-## Development
-
-### Running Tests
-
-```bash
-task test
-# or
-go test ./...
-```
-
-### Generating Swagger Docs
-
-```bash
-task swagger
-# or
-swag init -g cmd/api/main.go -o docs
-```
-
-### Building
-
-```bash
-task build
-# or
-go build -o bin/public-api cmd/api/main.go
-```
 
 ## Integration
 

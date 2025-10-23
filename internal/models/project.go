@@ -10,7 +10,7 @@ type PortfolioProject struct {
 	LongDescription string       `json:"longDescription" gorm:"column:long_description"`
 	ImageFileID     *int64       `json:"-" gorm:"column:image_file_id"`
 	ImageFile       *StorageFile `json:"-" gorm:"foreignKey:ImageFileID"`
-	ImageURL        string       `json:"imageUrl" gorm:"-"`                         // Computed field
+	ImageURL        string       `json:"imageUrl" gorm:"-"` // Computed field
 	GithubURL       string       `json:"githubUrl" gorm:"column:github_url"`
 	LiveURL         string       `json:"liveUrl" gorm:"column:live_url"`
 	StartDate       *string      `json:"startDate" gorm:"column:start_date"`

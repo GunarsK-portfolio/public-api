@@ -19,22 +19,22 @@ func (MiniatureTheme) TableName() string {
 }
 
 type MiniatureProject struct {
-	ID            int64      `json:"id" gorm:"primaryKey"`
-	ThemeID       *int64     `json:"themeId,omitempty" gorm:"column:theme_id"`
-	Title         string     `json:"name"`                                       // Frontend expects "name"
-	Description   string     `json:"description"`
-	CompletedDate *string    `json:"completedDate" gorm:"column:completed_date"`
-	Scale         string     `json:"scale"`
-	Manufacturer  string     `json:"manufacturer"`
-	TimeSpent     *float64   `json:"timeSpent,omitempty" gorm:"column:time_spent"` // Hours as decimal
-	Difficulty    string     `json:"difficulty"`
-	DisplayOrder  int        `json:"displayOrder,omitempty" gorm:"column:display_order"`
-	Techniques    []string   `json:"techniques,omitempty" gorm:"-"`    // Loaded separately from junction table
-	Paints        []Paint    `json:"paints,omitempty" gorm:"-"`        // Loaded separately from junction table
+	ID            int64           `json:"id" gorm:"primaryKey"`
+	ThemeID       *int64          `json:"themeId,omitempty" gorm:"column:theme_id"`
+	Title         string          `json:"name"` // Frontend expects "name"
+	Description   string          `json:"description"`
+	CompletedDate *string         `json:"completedDate" gorm:"column:completed_date"`
+	Scale         string          `json:"scale"`
+	Manufacturer  string          `json:"manufacturer"`
+	TimeSpent     *float64        `json:"timeSpent,omitempty" gorm:"column:time_spent"` // Hours as decimal
+	Difficulty    string          `json:"difficulty"`
+	DisplayOrder  int             `json:"displayOrder,omitempty" gorm:"column:display_order"`
+	Techniques    []string        `json:"techniques,omitempty" gorm:"-"`          // Loaded separately from junction table
+	Paints        []Paint         `json:"paints,omitempty" gorm:"-"`              // Loaded separately from junction table
 	Files         []MiniatureFile `json:"-" gorm:"foreignKey:MiniatureProjectID"` // Database relation
-	Images        []Image         `json:"images,omitempty" gorm:"-"`               // Computed for frontend
-	CreatedAt     time.Time  `json:"createdAt" gorm:"column:created_at"`
-	UpdatedAt     time.Time  `json:"updatedAt" gorm:"column:updated_at"`
+	Images        []Image         `json:"images,omitempty" gorm:"-"`              // Computed for frontend
+	CreatedAt     time.Time       `json:"createdAt" gorm:"column:created_at"`
+	UpdatedAt     time.Time       `json:"updatedAt" gorm:"column:updated_at"`
 }
 
 func (MiniatureProject) TableName() string {
@@ -43,13 +43,13 @@ func (MiniatureProject) TableName() string {
 
 // MiniatureFile is the junction table between miniature projects and storage files
 type MiniatureFile struct {
-	ID                 int64      `json:"id" gorm:"primaryKey"`
-	MiniatureProjectID int64      `json:"-" gorm:"column:miniature_project_id"`
-	FileID             int64      `json:"-" gorm:"column:file_id"`
-	Caption            string     `json:"caption"`
-	DisplayOrder       int        `json:"displayOrder,omitempty" gorm:"column:display_order"`
+	ID                 int64        `json:"id" gorm:"primaryKey"`
+	MiniatureProjectID int64        `json:"-" gorm:"column:miniature_project_id"`
+	FileID             int64        `json:"-" gorm:"column:file_id"`
+	Caption            string       `json:"caption"`
+	DisplayOrder       int          `json:"displayOrder,omitempty" gorm:"column:display_order"`
 	File               *StorageFile `json:"-" gorm:"foreignKey:FileID"` // Reference to actual file
-	CreatedAt          time.Time  `json:"createdAt" gorm:"column:created_at"`
+	CreatedAt          time.Time    `json:"createdAt" gorm:"column:created_at"`
 }
 
 func (MiniatureFile) TableName() string {

@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"log"
 
+	commondb "github.com/GunarsK-portfolio/portfolio-common/database"
 	_ "github.com/GunarsK-portfolio/public-api/docs"
 	"github.com/GunarsK-portfolio/public-api/internal/config"
 	"github.com/GunarsK-portfolio/public-api/internal/handlers"
 	"github.com/GunarsK-portfolio/public-api/internal/repository"
 	"github.com/GunarsK-portfolio/public-api/internal/routes"
-	commondb "github.com/GunarsK-portfolio/portfolio-common/database"
 	"github.com/gin-gonic/gin"
 )
 
