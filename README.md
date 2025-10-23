@@ -1,6 +1,8 @@
 # Public API
 
 ![CI](https://github.com/GunarsK-portfolio/public-api/workflows/CI/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/GunarsK-portfolio/public-api)](https://goreportcard.com/report/github.com/GunarsK-portfolio/public-api)
+[![codecov](https://codecov.io/gh/GunarsK-portfolio/public-api/branch/main/graph/badge.svg)](https://codecov.io/gh/GunarsK-portfolio/public-api)
 
 RESTful API for public portfolio content access.
 
