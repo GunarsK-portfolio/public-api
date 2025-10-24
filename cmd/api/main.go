@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	commondb "github.com/GunarsK-portfolio/portfolio-common/database"
+	"github.com/GunarsK-portfolio/portfolio-common/logger"
+	"github.com/GunarsK-portfolio/portfolio-common/metrics"
 	_ "github.com/GunarsK-portfolio/public-api/docs"
 	"github.com/GunarsK-portfolio/public-api/internal/config"
 	"github.com/GunarsK-portfolio/public-api/internal/handlers"
@@ -22,6 +25,22 @@ func main() {
 	// Load configuration
 	cfg := config.Load()
 
+	// Initialize structured logger
+	appLogger := logger.New(logger.Config{
+		Level:       os.Getenv("LOG_LEVEL"),
+		Format:      os.Getenv("LOG_FORMAT"),
+		ServiceName: "public-api",
+		AddSource:   os.Getenv("LOG_SOURCE") == "true",
+	})
+
+	appLogger.Info("Starting public API", "version", "1.0")
+
+	// Initialize Prometheus metrics
+	metricsCollector := metrics.New(metrics.Config{
+		ServiceName: "public",
+		Namespace:   "portfolio",
+	})
+
 	// Connect to database
 	db, err := commondb.Connect(commondb.PostgresConfig{
 		Host:     cfg.DBHost,
@@ -33,8 +52,10 @@ func main() {
 		TimeZone: "UTC",
 	})
 	if err != nil {
+		appLogger.Error("Failed to connect to database", "error", err)
 		log.Fatal("Failed to connect to database:", err)
 	}
+	appLogger.Info("Database connection established")
 
 	// Initialize repository
 	repo := repository.New(db, cfg.FilesAPIURL)
@@ -42,15 +63,19 @@ func main() {
 	// Initialize handlers
 	handler := handlers.New(repo)
 
-	// Setup router
-	router := gin.Default()
+	// Setup router with custom middleware
+	router := gin.New()
+	router.Use(logger.Recovery(appLogger))
+	router.Use(logger.RequestLogger(appLogger))
+	router.Use(metricsCollector.Middleware())
 
 	// Setup routes
-	routes.Setup(router, handler)
+	routes.Setup(router, handler, metricsCollector)
 
 	// Start server
-	log.Printf("Starting public API on port %s", cfg.Port)
+	appLogger.Info("Public API ready", "port", cfg.Port, "environment", os.Getenv("ENVIRONMENT"))
 	if err := router.Run(fmt.Sprintf(":%s", cfg.Port)); err != nil {
+		appLogger.Error("Failed to start server", "error", err)
 		log.Fatal("Failed to start server:", err)
 	}
 }
