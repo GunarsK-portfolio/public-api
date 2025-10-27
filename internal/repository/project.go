@@ -1,8 +1,7 @@
 package repository
 
 import (
-	"fmt"
-
+	"github.com/GunarsK-portfolio/portfolio-common/utils"
 	"github.com/GunarsK-portfolio/public-api/internal/models"
 	"gorm.io/gorm"
 )
@@ -16,13 +15,14 @@ func (r *repository) GetAllProjects() ([]models.PortfolioProject, error) {
 		}).
 		Order("featured DESC, display_order ASC, start_date DESC").
 		Find(&projects).Error
+	if err != nil {
+		return nil, err
+	}
 
-	// Populate Technology.Type field and construct image URLs
+	// Populate Technology.Type field and image URLs
 	for i := range projects {
-		// Construct image URL
-		if projects[i].ImageFile != nil {
-			projects[i].ImageURL = fmt.Sprintf("%s/files/%s/%s", r.filesAPIURL, projects[i].ImageFile.FileType, projects[i].ImageFile.S3Key)
-		}
+		// Populate image URL using helper
+		utils.PopulateFileURL(projects[i].ImageFile, r.filesAPIURL)
 
 		// Populate technology types
 		for j := range projects[i].Technologies {
@@ -32,7 +32,7 @@ func (r *repository) GetAllProjects() ([]models.PortfolioProject, error) {
 		}
 	}
 
-	return projects, err
+	return projects, nil
 }
 
 func (r *repository) GetProjectByID(id int64) (*models.PortfolioProject, error) {
@@ -47,10 +47,8 @@ func (r *repository) GetProjectByID(id int64) (*models.PortfolioProject, error) 
 		return nil, err
 	}
 
-	// Construct image URL
-	if project.ImageFile != nil {
-		project.ImageURL = fmt.Sprintf("%s/files/%s/%s", r.filesAPIURL, project.ImageFile.FileType, project.ImageFile.S3Key)
-	}
+	// Populate image URL using helper
+	utils.PopulateFileURL(project.ImageFile, r.filesAPIURL)
 
 	// Populate Technology.Type field
 	for j := range project.Technologies {
