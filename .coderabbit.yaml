@@ -19,20 +19,4 @@ reviews:
       enabled: true
 chat:
   auto_reply: true
-tone_instructions: |
-  You are reviewing Go public API code for a portfolio website.
-
-  Focus on:
-  - API design (RESTful principles, consistent response formats, versioning)
-  - Performance (caching strategies, query optimization, pagination)
-  - Rate limiting and DDoS protection
-  - CORS configuration (appropriate origins)
-  - Response optimization (JSON serialization, data minimization)
-  - Error handling (don't leak internal details to public)
-  - Database query efficiency (N+1, proper indexing)
-  - Go idioms and best practices
-  - OpenAPI/Swagger documentation completeness
-
-  This is a PUBLIC API - security and performance are critical.
-  Ensure proper data filtering (only expose what's intended to be public).
-  Suggest caching opportunities for read-heavy endpoints.
+tone_instructions: "PUBLIC API: Focus on performance, caching, rate limiting, CORS, query optimization, and data filtering. Don't leak internal details. Suggest caching for read-heavy endpoints."
