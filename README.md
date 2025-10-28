@@ -30,7 +30,7 @@ RESTful API for public portfolio content access.
 
 ## Project Structure
 
-```
+```text
 public-api/
 ├── cmd/
 │   └── api/              # Application entrypoint
@@ -54,11 +54,13 @@ docker-compose up -d
 ### Local Development
 
 1. Copy environment file:
+
 ```bash
 cp .env.example .env
 ```
 
-2. Update `.env` with your configuration:
+1. Update `.env` with your configuration:
+
 ```env
 PORT=8082
 DB_HOST=localhost
@@ -69,13 +71,15 @@ DB_NAME=portfolio
 FILES_API_URL=http://localhost:8085/api/v1
 ```
 
-3. Start infrastructure (if not running):
+1. Start infrastructure (if not running):
+
 ```bash
 # From infrastructure directory
 docker-compose up -d postgres flyway
 ```
 
-4. Run the service:
+1. Run the service:
+
 ```bash
 go run cmd/api/main.go
 ```
@@ -83,6 +87,7 @@ go run cmd/api/main.go
 ## Available Commands
 
 Using Task:
+
 ```bash
 # Development
 task dev:swagger         # Generate Swagger documentation
@@ -115,6 +120,7 @@ task ci:all              # Run all CI checks (format, tidy, lint, vet, test, vul
 ```
 
 Using Go directly:
+
 ```bash
 go run cmd/api/main.go                       # Run
 go build -o bin/public-api cmd/api/main.go   # Build
@@ -126,9 +132,11 @@ go test ./...                                 # Test
 Base URL: `http://localhost:8082/api/v1`
 
 ### Health Check
+
 - `GET /health` - Service health status
 
 ### Public Endpoints
+
 - `GET /profile` - Get profile information
 - `GET /projects` - List all projects
 - `GET /projects/:id` - Get project details
@@ -142,6 +150,7 @@ Base URL: `http://localhost:8082/api/v1`
 ## Swagger Documentation
 
 When running, Swagger UI is available at:
+
 - `http://localhost:8082/swagger/index.html`
 
 ## Environment Variables
