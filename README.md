@@ -25,6 +25,7 @@ RESTful API for public portfolio content access.
 ## Prerequisites
 
 - Go 1.25+
+- Node.js 22+ and npm 11+
 - PostgreSQL (or use Docker Compose)
 - Files API running (or use Docker Compose)
 
