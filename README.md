@@ -16,7 +16,7 @@ RESTful API for public portfolio content access.
 
 ## Tech Stack
 
-- **Language**: Go 1.25
+- **Language**: Go 1.25.3
 - **Framework**: Gin
 - **Database**: PostgreSQL (GORM)
 - **Storage**: Files API (for images/documents)
