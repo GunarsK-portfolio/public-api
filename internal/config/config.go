@@ -9,27 +9,19 @@ import (
 )
 
 type Config struct {
-	DBHost      string `validate:"required"`
-	DBPort      string `validate:"required,number,min=1,max=65535"`
-	DBUser      string `validate:"required"`
-	DBPassword  string `validate:"required"`
-	DBName      string `validate:"required"`
-	Port        string `validate:"required,number,min=1,max=65535"`
+	common.DatabaseConfig
+	common.ServiceConfig
 	FilesAPIURL string `validate:"required,url"`
 }
 
 func Load() *Config {
 	cfg := &Config{
-		DBHost:      common.GetEnvRequired("DB_HOST"),
-		DBPort:      common.GetEnvRequired("DB_PORT"),
-		DBUser:      common.GetEnvRequired("DB_USER"),
-		DBPassword:  common.GetEnvRequired("DB_PASSWORD"),
-		DBName:      common.GetEnvRequired("DB_NAME"),
-		Port:        common.GetEnvRequired("PORT"),
-		FilesAPIURL: common.GetEnvRequired("FILES_API_URL"),
+		DatabaseConfig: common.NewDatabaseConfig(),
+		ServiceConfig:  common.NewServiceConfig("8082"),
+		FilesAPIURL:    common.GetEnvRequired("FILES_API_URL"),
 	}
 
-	// Validate configuration
+	// Validate service-specific fields
 	validate := validator.New()
 	if err := validate.Struct(cfg); err != nil {
 		panic(fmt.Sprintf("Invalid configuration: %v", err))
