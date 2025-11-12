@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	commonHandlers "github.com/GunarsK-portfolio/portfolio-common/handlers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +18,7 @@ import (
 func (h *Handler) GetWorkExperience(c *gin.Context) {
 	experiences, err := h.repo.GetAllWorkExperience(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch work experience"})
+		commonHandlers.LogAndRespondError(c, http.StatusInternalServerError, err, "failed to fetch work experience")
 		return
 	}
 	c.JSON(http.StatusOK, experiences)
