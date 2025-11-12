@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	commonHandlers "github.com/GunarsK-portfolio/portfolio-common/handlers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +18,7 @@ import (
 func (h *Handler) GetSkills(c *gin.Context) {
 	skills, err := h.repo.GetAllSkills(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch skills"})
+		commonHandlers.LogAndRespondError(c, http.StatusInternalServerError, err, "failed to fetch skills")
 		return
 	}
 	c.JSON(http.StatusOK, skills)

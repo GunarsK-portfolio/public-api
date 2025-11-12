@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	commonHandlers "github.com/GunarsK-portfolio/portfolio-common/handlers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +19,7 @@ import (
 func (h *Handler) GetProfile(c *gin.Context) {
 	profile, err := h.repo.GetProfile(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "profile not found"})
+		commonHandlers.HandleRepositoryError(c, err, "profile not found", "failed to fetch profile")
 		return
 	}
 	c.JSON(http.StatusOK, profile)

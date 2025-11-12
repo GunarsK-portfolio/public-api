@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	commonHandlers "github.com/GunarsK-portfolio/portfolio-common/handlers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +19,7 @@ import (
 func (h *Handler) GetMiniatures(c *gin.Context) {
 	projects, err := h.repo.GetAllMiniatureProjects(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch miniature projects"})
+		commonHandlers.LogAndRespondError(c, http.StatusInternalServerError, err, "failed to fetch miniature projects")
 		return
 	}
 	c.JSON(http.StatusOK, projects)
@@ -39,13 +40,13 @@ func (h *Handler) GetMiniatureByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		commonHandlers.RespondError(c, http.StatusBadRequest, "invalid id")
 		return
 	}
 
 	project, err := h.repo.GetMiniatureProjectByID(c.Request.Context(), id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "miniature project not found"})
+		commonHandlers.HandleRepositoryError(c, err, "miniature project not found", "failed to fetch miniature project")
 		return
 	}
 	c.JSON(http.StatusOK, project)
@@ -62,7 +63,7 @@ func (h *Handler) GetMiniatureByID(c *gin.Context) {
 func (h *Handler) GetMiniatureThemes(c *gin.Context) {
 	themes, err := h.repo.GetAllMiniatureThemes(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch miniature themes"})
+		commonHandlers.LogAndRespondError(c, http.StatusInternalServerError, err, "failed to fetch miniature themes")
 		return
 	}
 	c.JSON(http.StatusOK, themes)

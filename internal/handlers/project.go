@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	commonHandlers "github.com/GunarsK-portfolio/portfolio-common/handlers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +19,7 @@ import (
 func (h *Handler) GetProjects(c *gin.Context) {
 	projects, err := h.repo.GetAllProjects(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch projects"})
+		commonHandlers.LogAndRespondError(c, http.StatusInternalServerError, err, "failed to fetch projects")
 		return
 	}
 	c.JSON(http.StatusOK, projects)
@@ -39,13 +40,13 @@ func (h *Handler) GetProjectByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		commonHandlers.RespondError(c, http.StatusBadRequest, "invalid id")
 		return
 	}
 
 	project, err := h.repo.GetProjectByID(c.Request.Context(), id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "project not found"})
+		commonHandlers.HandleRepositoryError(c, err, "project not found", "failed to fetch project")
 		return
 	}
 	c.JSON(http.StatusOK, project)
