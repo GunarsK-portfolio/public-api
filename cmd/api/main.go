@@ -71,7 +71,7 @@ func main() {
 	router.Use(metricsCollector.Middleware())
 
 	// Setup routes
-	routes.Setup(router, handler, metricsCollector)
+	routes.Setup(router, handler, cfg, metricsCollector)
 
 	// Start server
 	appLogger.Info("Public API ready", "port", cfg.ServiceConfig.Port, "environment", os.Getenv("ENVIRONMENT"))
