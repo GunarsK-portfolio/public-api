@@ -1,13 +1,15 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/GunarsK-portfolio/portfolio-common/utils"
 	"github.com/GunarsK-portfolio/public-api/internal/models"
 )
 
-func (r *repository) GetProfile() (*models.Profile, error) {
+func (r *repository) GetProfile(ctx context.Context) (*models.Profile, error) {
 	var profile models.Profile
-	err := r.db.
+	err := r.db.WithContext(ctx).
 		Preload("AvatarFile").
 		Preload("ResumeFile").
 		First(&profile).Error

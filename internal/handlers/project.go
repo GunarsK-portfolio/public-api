@@ -16,7 +16,7 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /projects [get]
 func (h *Handler) GetProjects(c *gin.Context) {
-	projects, err := h.repo.GetAllProjects()
+	projects, err := h.repo.GetAllProjects(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch projects"})
 		return
@@ -43,7 +43,7 @@ func (h *Handler) GetProjectByID(c *gin.Context) {
 		return
 	}
 
-	project, err := h.repo.GetProjectByID(id)
+	project, err := h.repo.GetProjectByID(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "project not found"})
 		return
