@@ -2,6 +2,8 @@ package routes
 
 import (
 	"github.com/GunarsK-portfolio/portfolio-common/metrics"
+	common "github.com/GunarsK-portfolio/portfolio-common/middleware"
+	"github.com/GunarsK-portfolio/public-api/internal/config"
 	"github.com/GunarsK-portfolio/public-api/internal/handlers"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -9,18 +11,15 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func Setup(router *gin.Engine, handler *handlers.Handler, metricsCollector *metrics.Metrics) {
-	// Enable CORS
-	router.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-		c.Next()
-	})
+func Setup(router *gin.Engine, handler *handlers.Handler, cfg *config.Config, metricsCollector *metrics.Metrics) {
+	// Security middleware with CORS validation (read-only public access)
+	securityMiddleware := common.NewSecurityMiddleware(
+		cfg.AllowedOrigins,
+		"GET,OPTIONS",
+		"Content-Type",
+		false,
+	)
+	router.Use(securityMiddleware.Apply())
 
 	// Health check
 	router.GET("/health", handler.HealthCheck)
