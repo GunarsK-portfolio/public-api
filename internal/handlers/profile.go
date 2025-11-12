@@ -16,7 +16,7 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /profile [get]
 func (h *Handler) GetProfile(c *gin.Context) {
-	profile, err := h.repo.GetProfile()
+	profile, err := h.repo.GetProfile(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "profile not found"})
 		return

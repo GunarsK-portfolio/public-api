@@ -1,14 +1,16 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/GunarsK-portfolio/portfolio-common/utils"
 	"github.com/GunarsK-portfolio/public-api/internal/models"
 	"gorm.io/gorm"
 )
 
-func (r *repository) GetAllProjects() ([]models.PortfolioProject, error) {
+func (r *repository) GetAllProjects(ctx context.Context) ([]models.PortfolioProject, error) {
 	var projects []models.PortfolioProject
-	err := r.db.
+	err := r.db.WithContext(ctx).
 		Preload("ImageFile").
 		Preload("Technologies", func(db *gorm.DB) *gorm.DB {
 			return db.Preload("SkillType").Order("portfolio.skills.display_order ASC")
@@ -35,9 +37,9 @@ func (r *repository) GetAllProjects() ([]models.PortfolioProject, error) {
 	return projects, nil
 }
 
-func (r *repository) GetProjectByID(id int64) (*models.PortfolioProject, error) {
+func (r *repository) GetProjectByID(ctx context.Context, id int64) (*models.PortfolioProject, error) {
 	var project models.PortfolioProject
-	err := r.db.
+	err := r.db.WithContext(ctx).
 		Preload("ImageFile").
 		Preload("Technologies", func(db *gorm.DB) *gorm.DB {
 			return db.Preload("SkillType").Order("portfolio.skills.display_order ASC")

@@ -15,7 +15,7 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /skills [get]
 func (h *Handler) GetSkills(c *gin.Context) {
-	skills, err := h.repo.GetAllSkills()
+	skills, err := h.repo.GetAllSkills(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch skills"})
 		return

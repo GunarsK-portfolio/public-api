@@ -1,10 +1,14 @@
 package repository
 
-import "github.com/GunarsK-portfolio/public-api/internal/models"
+import (
+	"context"
 
-func (r *repository) GetAllSkills() ([]models.Skill, error) {
+	"github.com/GunarsK-portfolio/public-api/internal/models"
+)
+
+func (r *repository) GetAllSkills(ctx context.Context) ([]models.Skill, error) {
 	var skills []models.Skill
-	err := r.db.
+	err := r.db.WithContext(ctx).
 		Preload("SkillType").
 		Where("is_visible = ?", true).
 		Order("skill_type_id ASC, display_order ASC").

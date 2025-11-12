@@ -1,20 +1,22 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/GunarsK-portfolio/public-api/internal/models"
 	"gorm.io/gorm"
 )
 
 type Repository interface {
-	GetProfile() (*models.Profile, error)
-	GetAllWorkExperience() ([]models.WorkExperience, error)
-	GetAllCertifications() ([]models.Certification, error)
-	GetAllSkills() ([]models.Skill, error)
-	GetAllProjects() ([]models.PortfolioProject, error)
-	GetProjectByID(id int64) (*models.PortfolioProject, error)
-	GetAllMiniatureProjects() ([]models.MiniatureProject, error)
-	GetMiniatureProjectByID(id int64) (*models.MiniatureProject, error)
-	GetAllMiniatureThemes() ([]models.MiniatureTheme, error)
+	GetProfile(ctx context.Context) (*models.Profile, error)
+	GetAllWorkExperience(ctx context.Context) ([]models.WorkExperience, error)
+	GetAllCertifications(ctx context.Context) ([]models.Certification, error)
+	GetAllSkills(ctx context.Context) ([]models.Skill, error)
+	GetAllProjects(ctx context.Context) ([]models.PortfolioProject, error)
+	GetProjectByID(ctx context.Context, id int64) (*models.PortfolioProject, error)
+	GetAllMiniatureProjects(ctx context.Context) ([]models.MiniatureProject, error)
+	GetMiniatureProjectByID(ctx context.Context, id int64) (*models.MiniatureProject, error)
+	GetAllMiniatureThemes(ctx context.Context) ([]models.MiniatureTheme, error)
 }
 
 type repository struct {

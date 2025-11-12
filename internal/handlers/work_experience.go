@@ -15,7 +15,7 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /experience [get]
 func (h *Handler) GetWorkExperience(c *gin.Context) {
-	experiences, err := h.repo.GetAllWorkExperience()
+	experiences, err := h.repo.GetAllWorkExperience(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch work experience"})
 		return

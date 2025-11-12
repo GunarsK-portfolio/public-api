@@ -15,7 +15,7 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /certifications [get]
 func (h *Handler) GetCertifications(c *gin.Context) {
-	certifications, err := h.repo.GetAllCertifications()
+	certifications, err := h.repo.GetAllCertifications(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch certifications"})
 		return

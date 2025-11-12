@@ -1,14 +1,16 @@
 package repository
 
 import (
+	"context"
+
 	"github.com/GunarsK-portfolio/portfolio-common/utils"
 	"github.com/GunarsK-portfolio/public-api/internal/models"
 	"gorm.io/gorm"
 )
 
-func (r *repository) GetAllMiniatureProjects() ([]models.MiniatureProject, error) {
+func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.MiniatureProject, error) {
 	var projects []models.MiniatureProject
-	err := r.db.
+	err := r.db.WithContext(ctx).
 		Preload("Files.File").
 		Preload("Files", func(db *gorm.DB) *gorm.DB {
 			return db.Order("display_order ASC")
@@ -35,9 +37,9 @@ func (r *repository) GetAllMiniatureProjects() ([]models.MiniatureProject, error
 	return projects, err
 }
 
-func (r *repository) GetMiniatureProjectByID(id int64) (*models.MiniatureProject, error) {
+func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*models.MiniatureProject, error) {
 	var project models.MiniatureProject
-	err := r.db.
+	err := r.db.WithContext(ctx).
 		Preload("Files.File").
 		Preload("Files", func(db *gorm.DB) *gorm.DB {
 			return db.Order("display_order ASC")
@@ -64,9 +66,9 @@ func (r *repository) GetMiniatureProjectByID(id int64) (*models.MiniatureProject
 	return &project, nil
 }
 
-func (r *repository) GetAllMiniatureThemes() ([]models.MiniatureTheme, error) {
+func (r *repository) GetAllMiniatureThemes(ctx context.Context) ([]models.MiniatureTheme, error) {
 	var themes []models.MiniatureTheme
-	err := r.db.
+	err := r.db.WithContext(ctx).
 		Preload("Miniatures", func(db *gorm.DB) *gorm.DB {
 			return db.Order("display_order ASC, completed_date DESC")
 		}).

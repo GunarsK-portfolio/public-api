@@ -16,7 +16,7 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /miniatures [get]
 func (h *Handler) GetMiniatures(c *gin.Context) {
-	projects, err := h.repo.GetAllMiniatureProjects()
+	projects, err := h.repo.GetAllMiniatureProjects(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch miniature projects"})
 		return
@@ -43,7 +43,7 @@ func (h *Handler) GetMiniatureByID(c *gin.Context) {
 		return
 	}
 
-	project, err := h.repo.GetMiniatureProjectByID(id)
+	project, err := h.repo.GetMiniatureProjectByID(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "miniature project not found"})
 		return
@@ -60,7 +60,7 @@ func (h *Handler) GetMiniatureByID(c *gin.Context) {
 // @Failure 500 {object} map[string]string
 // @Router /miniatures/themes [get]
 func (h *Handler) GetMiniatureThemes(c *gin.Context) {
-	themes, err := h.repo.GetAllMiniatureThemes()
+	themes, err := h.repo.GetAllMiniatureThemes(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch miniature themes"})
 		return
