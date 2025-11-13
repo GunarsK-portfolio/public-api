@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/GunarsK-portfolio/portfolio-common/utils"
 	"github.com/GunarsK-portfolio/public-api/internal/models"
@@ -14,7 +15,7 @@ func (r *repository) GetProfile(ctx context.Context) (*models.Profile, error) {
 		Preload("ResumeFile").
 		First(&profile).Error
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get profile: %w", err)
 	}
 
 	// Populate file URLs using helper

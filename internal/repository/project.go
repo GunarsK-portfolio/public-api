@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/GunarsK-portfolio/portfolio-common/utils"
 	"github.com/GunarsK-portfolio/public-api/internal/models"
@@ -18,7 +19,7 @@ func (r *repository) GetAllProjects(ctx context.Context) ([]models.PortfolioProj
 		Order("featured DESC, display_order ASC, start_date DESC").
 		Find(&projects).Error
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get all projects: %w", err)
 	}
 
 	// Populate Technology.Type field and image URLs
@@ -46,7 +47,7 @@ func (r *repository) GetProjectByID(ctx context.Context, id int64) (*models.Port
 		}).
 		First(&project, id).Error
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get project by id %d: %w", id, err)
 	}
 
 	// Populate image URL using helper

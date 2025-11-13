@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/GunarsK-portfolio/portfolio-common/utils"
 	"github.com/GunarsK-portfolio/public-api/internal/models"
@@ -17,6 +18,9 @@ func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.Mini
 		}).
 		Order("display_order ASC, completed_date DESC").
 		Find(&projects).Error
+	if err != nil {
+		return nil, fmt.Errorf("failed to get all miniature projects: %w", err)
+	}
 
 	// Convert Files to Images for frontend
 	for i := range projects {
@@ -34,7 +38,7 @@ func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.Mini
 		}
 	}
 
-	return projects, err
+	return projects, nil
 }
 
 func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*models.MiniatureProject, error) {
@@ -46,7 +50,7 @@ func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*mo
 		}).
 		First(&project, id).Error
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get miniature project by id %d: %w", id, err)
 	}
 
 	// Convert Files to Images for frontend
@@ -74,5 +78,8 @@ func (r *repository) GetAllMiniatureThemes(ctx context.Context) ([]models.Miniat
 		}).
 		Order("display_order ASC").
 		Find(&themes).Error
-	return themes, err
+	if err != nil {
+		return nil, fmt.Errorf("failed to get all miniature themes: %w", err)
+	}
+	return themes, nil
 }
