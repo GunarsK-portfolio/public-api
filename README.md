@@ -164,6 +164,7 @@ When running, Swagger UI is available at:
 | `DB_USER` | Database user (read-only) | `portfolio_public` |
 | `DB_PASSWORD` | Database password | `portfolio_public_dev_pass` |
 | `DB_NAME` | Database name | `portfolio` |
+| `DB_SSLMODE` | PostgreSQL SSL mode | `disable` |
 | `FILES_API_URL` | Files API base URL | `http://localhost:8085/api/v1` |
 
 ## Integration
