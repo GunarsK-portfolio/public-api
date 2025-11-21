@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/GunarsK-portfolio/portfolio-common/metrics"
 	common "github.com/GunarsK-portfolio/portfolio-common/middleware"
+	"github.com/GunarsK-portfolio/public-api/docs"
 	"github.com/GunarsK-portfolio/public-api/internal/config"
 	"github.com/GunarsK-portfolio/public-api/internal/handlers"
 	"github.com/gin-gonic/gin"
@@ -41,6 +42,9 @@ func Setup(router *gin.Engine, handler *handlers.Handler, cfg *config.Config, me
 		v1.GET("/miniatures/themes", handler.GetMiniatureThemes)
 	}
 
-	// Swagger documentation
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// Swagger documentation (only if SWAGGER_HOST is configured)
+	if cfg.SwaggerHost != "" {
+		docs.SwaggerInfo.Host = cfg.SwaggerHost
+		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 }
