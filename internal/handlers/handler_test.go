@@ -843,6 +843,7 @@ func TestInvalidIDFormats(t *testing.T) {
 
 	// Note: Negative IDs are parseable by strconv.ParseInt, so they pass validation
 	// and get a "not found" from the repository. Only non-numeric strings fail.
+	// Empty IDs route to a different path (404), not the ID validation handler.
 	tests := []struct {
 		name      string
 		path      string
@@ -850,8 +851,11 @@ func TestInvalidIDFormats(t *testing.T) {
 	}{
 		{"project with string ID", "/projects/", "abc"},
 		{"project with float ID", "/projects/", "1.5"},
+		{"project with overflow ID", "/projects/", "99999999999999999999"},
+		{"project with whitespace", "/projects/", " "},
 		{"miniature with string ID", "/miniatures/", "xyz"},
 		{"miniature with float ID", "/miniatures/", "3.14"},
+		{"miniature with special chars", "/miniatures/", "!@#"},
 	}
 
 	for _, tt := range tests {

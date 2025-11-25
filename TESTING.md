@@ -39,7 +39,7 @@ go test -v -run Miniature ./internal/handlers/
 | Certifications | 3 | GetAll + error cases |
 | Skills | 2 | GetAll + error cases |
 | Projects | 7 | GetAll, GetByID + error cases |
-| Miniatures | 7 | GetAll, GetByID + error cases |
+| Miniatures | 6 | GetAll, GetByID + error cases |
 | Miniature Themes | 3 | GetAll + error cases |
 | Context Propagation | 1 | Verifies context with sentinel value |
 | ID Validation | 1 | Table-driven invalid ID format tests |
