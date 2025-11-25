@@ -22,15 +22,15 @@ go tool cover -html=coverage.out -o coverage.html
 go test -v -run TestGetProfile_Success ./internal/handlers/
 
 # Run all Project tests
-go test -v -run TestProject ./internal/handlers/
+go test -v -run Project ./internal/handlers/
 
 # Run all Miniature tests
-go test -v -run TestMiniature ./internal/handlers/
+go test -v -run Miniature ./internal/handlers/
 ```
 
 ## Test Files
 
-**`handler_test.go`** - 37 tests
+**`handler_test.go`** - 30 tests
 
 | Category | Tests | Coverage |
 |----------|-------|----------|
@@ -41,8 +41,8 @@ go test -v -run TestMiniature ./internal/handlers/
 | Projects | 7 | GetAll, GetByID + error cases |
 | Miniatures | 7 | GetAll, GetByID + error cases |
 | Miniature Themes | 3 | GetAll + error cases |
-| Context Propagation | 1 | Verifies context passed to repository |
-| ID Validation | 4 | Invalid ID format handling |
+| Context Propagation | 1 | Verifies context with sentinel value |
+| ID Validation | 1 | Table-driven invalid ID format tests |
 | Constructor | 1 | Handler initialization |
 
 ## Key Testing Patterns

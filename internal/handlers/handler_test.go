@@ -206,13 +206,22 @@ func createTestMiniatureTheme() models.MiniatureTheme {
 	}
 }
 
-func performRequest(router *gin.Engine, method, path string, body interface{}) *httptest.ResponseRecorder {
+func performRequest(t *testing.T, router *gin.Engine, method, path string, body interface{}) *httptest.ResponseRecorder {
+	t.Helper()
+
 	var reqBody []byte
 	if body != nil {
-		reqBody, _ = json.Marshal(body)
+		b, err := json.Marshal(body)
+		if err != nil {
+			t.Fatalf("failed to marshal request body: %v", err)
+		}
+		reqBody = b
 	}
 
-	req, _ := http.NewRequest(method, path, bytes.NewBuffer(reqBody))
+	req, err := http.NewRequest(method, path, bytes.NewBuffer(reqBody))
+	if err != nil {
+		t.Fatalf("failed to create HTTP request: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 
 	w := httptest.NewRecorder()
@@ -247,7 +256,7 @@ func TestGetProfile_Success(t *testing.T) {
 		return &expectedProfile, nil
 	}
 
-	w := performRequest(router, "GET", "/profile", nil)
+	w := performRequest(t, router, "GET", "/profile", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetProfile() status = %d, want %d", w.Code, http.StatusOK)
@@ -272,7 +281,7 @@ func TestGetProfile_NotFound(t *testing.T) {
 		return nil, gorm.ErrRecordNotFound
 	}
 
-	w := performRequest(router, "GET", "/profile", nil)
+	w := performRequest(t, router, "GET", "/profile", nil)
 
 	if w.Code != http.StatusNotFound {
 		t.Errorf("GetProfile() status = %d, want %d", w.Code, http.StatusNotFound)
@@ -288,7 +297,7 @@ func TestGetProfile_RepositoryError(t *testing.T) {
 		return nil, errors.New("database connection failed")
 	}
 
-	w := performRequest(router, "GET", "/profile", nil)
+	w := performRequest(t, router, "GET", "/profile", nil)
 
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("GetProfile() status = %d, want %d", w.Code, http.StatusInternalServerError)
@@ -309,7 +318,7 @@ func TestGetWorkExperience_Success(t *testing.T) {
 		return expectedExps, nil
 	}
 
-	w := performRequest(router, "GET", "/experience", nil)
+	w := performRequest(t, router, "GET", "/experience", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetWorkExperience() status = %d, want %d", w.Code, http.StatusOK)
@@ -334,7 +343,7 @@ func TestGetWorkExperience_Empty(t *testing.T) {
 		return []models.WorkExperience{}, nil
 	}
 
-	w := performRequest(router, "GET", "/experience", nil)
+	w := performRequest(t, router, "GET", "/experience", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetWorkExperience() status = %d, want %d", w.Code, http.StatusOK)
@@ -350,7 +359,7 @@ func TestGetWorkExperience_RepositoryError(t *testing.T) {
 		return nil, errors.New("database error")
 	}
 
-	w := performRequest(router, "GET", "/experience", nil)
+	w := performRequest(t, router, "GET", "/experience", nil)
 
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("GetWorkExperience() status = %d, want %d", w.Code, http.StatusInternalServerError)
@@ -371,7 +380,7 @@ func TestGetCertifications_Success(t *testing.T) {
 		return expectedCerts, nil
 	}
 
-	w := performRequest(router, "GET", "/certifications", nil)
+	w := performRequest(t, router, "GET", "/certifications", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetCertifications() status = %d, want %d", w.Code, http.StatusOK)
@@ -396,7 +405,7 @@ func TestGetCertifications_Empty(t *testing.T) {
 		return []models.Certification{}, nil
 	}
 
-	w := performRequest(router, "GET", "/certifications", nil)
+	w := performRequest(t, router, "GET", "/certifications", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetCertifications() status = %d, want %d", w.Code, http.StatusOK)
@@ -412,7 +421,7 @@ func TestGetCertifications_RepositoryError(t *testing.T) {
 		return nil, errors.New("database error")
 	}
 
-	w := performRequest(router, "GET", "/certifications", nil)
+	w := performRequest(t, router, "GET", "/certifications", nil)
 
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("GetCertifications() status = %d, want %d", w.Code, http.StatusInternalServerError)
@@ -433,7 +442,7 @@ func TestGetSkills_Success(t *testing.T) {
 		return expectedSkills, nil
 	}
 
-	w := performRequest(router, "GET", "/skills", nil)
+	w := performRequest(t, router, "GET", "/skills", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetSkills() status = %d, want %d", w.Code, http.StatusOK)
@@ -458,7 +467,7 @@ func TestGetSkills_RepositoryError(t *testing.T) {
 		return nil, errors.New("database error")
 	}
 
-	w := performRequest(router, "GET", "/skills", nil)
+	w := performRequest(t, router, "GET", "/skills", nil)
 
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("GetSkills() status = %d, want %d", w.Code, http.StatusInternalServerError)
@@ -479,7 +488,7 @@ func TestGetProjects_Success(t *testing.T) {
 		return expectedProjects, nil
 	}
 
-	w := performRequest(router, "GET", "/projects", nil)
+	w := performRequest(t, router, "GET", "/projects", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetProjects() status = %d, want %d", w.Code, http.StatusOK)
@@ -504,7 +513,7 @@ func TestGetProjects_Empty(t *testing.T) {
 		return []models.PortfolioProject{}, nil
 	}
 
-	w := performRequest(router, "GET", "/projects", nil)
+	w := performRequest(t, router, "GET", "/projects", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetProjects() status = %d, want %d", w.Code, http.StatusOK)
@@ -520,7 +529,7 @@ func TestGetProjects_RepositoryError(t *testing.T) {
 		return nil, errors.New("database error")
 	}
 
-	w := performRequest(router, "GET", "/projects", nil)
+	w := performRequest(t, router, "GET", "/projects", nil)
 
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("GetProjects() status = %d, want %d", w.Code, http.StatusInternalServerError)
@@ -540,7 +549,7 @@ func TestGetProjectByID_Success(t *testing.T) {
 		return &expectedProject, nil
 	}
 
-	w := performRequest(router, "GET", "/projects/1", nil)
+	w := performRequest(t, router, "GET", "/projects/1", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetProjectByID() status = %d, want %d", w.Code, http.StatusOK)
@@ -565,7 +574,7 @@ func TestGetProjectByID_NotFound(t *testing.T) {
 		return nil, gorm.ErrRecordNotFound
 	}
 
-	w := performRequest(router, "GET", "/projects/999", nil)
+	w := performRequest(t, router, "GET", "/projects/999", nil)
 
 	if w.Code != http.StatusNotFound {
 		t.Errorf("GetProjectByID() status = %d, want %d", w.Code, http.StatusNotFound)
@@ -577,7 +586,7 @@ func TestGetProjectByID_InvalidID(t *testing.T) {
 	router := setupTestRouter(t)
 	router.GET("/projects/:id", handler.GetProjectByID)
 
-	w := performRequest(router, "GET", "/projects/invalid", nil)
+	w := performRequest(t, router, "GET", "/projects/invalid", nil)
 
 	if w.Code != http.StatusBadRequest {
 		t.Errorf("GetProjectByID() status = %d, want %d", w.Code, http.StatusBadRequest)
@@ -593,7 +602,7 @@ func TestGetProjectByID_RepositoryError(t *testing.T) {
 		return nil, errors.New("database error")
 	}
 
-	w := performRequest(router, "GET", "/projects/1", nil)
+	w := performRequest(t, router, "GET", "/projects/1", nil)
 
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("GetProjectByID() status = %d, want %d", w.Code, http.StatusInternalServerError)
@@ -614,7 +623,7 @@ func TestGetMiniatures_Success(t *testing.T) {
 		return expectedMiniatures, nil
 	}
 
-	w := performRequest(router, "GET", "/miniatures", nil)
+	w := performRequest(t, router, "GET", "/miniatures", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetMiniatures() status = %d, want %d", w.Code, http.StatusOK)
@@ -639,7 +648,7 @@ func TestGetMiniatures_RepositoryError(t *testing.T) {
 		return nil, errors.New("database error")
 	}
 
-	w := performRequest(router, "GET", "/miniatures", nil)
+	w := performRequest(t, router, "GET", "/miniatures", nil)
 
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("GetMiniatures() status = %d, want %d", w.Code, http.StatusInternalServerError)
@@ -656,7 +665,7 @@ func TestGetMiniatureByID_Success(t *testing.T) {
 		return &expectedMiniature, nil
 	}
 
-	w := performRequest(router, "GET", "/miniatures/1", nil)
+	w := performRequest(t, router, "GET", "/miniatures/1", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetMiniatureByID() status = %d, want %d", w.Code, http.StatusOK)
@@ -681,7 +690,7 @@ func TestGetMiniatureByID_NotFound(t *testing.T) {
 		return nil, gorm.ErrRecordNotFound
 	}
 
-	w := performRequest(router, "GET", "/miniatures/999", nil)
+	w := performRequest(t, router, "GET", "/miniatures/999", nil)
 
 	if w.Code != http.StatusNotFound {
 		t.Errorf("GetMiniatureByID() status = %d, want %d", w.Code, http.StatusNotFound)
@@ -693,7 +702,7 @@ func TestGetMiniatureByID_InvalidID(t *testing.T) {
 	router := setupTestRouter(t)
 	router.GET("/miniatures/:id", handler.GetMiniatureByID)
 
-	w := performRequest(router, "GET", "/miniatures/invalid", nil)
+	w := performRequest(t, router, "GET", "/miniatures/invalid", nil)
 
 	if w.Code != http.StatusBadRequest {
 		t.Errorf("GetMiniatureByID() status = %d, want %d", w.Code, http.StatusBadRequest)
@@ -709,7 +718,7 @@ func TestGetMiniatureByID_RepositoryError(t *testing.T) {
 		return nil, errors.New("database error")
 	}
 
-	w := performRequest(router, "GET", "/miniatures/1", nil)
+	w := performRequest(t, router, "GET", "/miniatures/1", nil)
 
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("GetMiniatureByID() status = %d, want %d", w.Code, http.StatusInternalServerError)
@@ -730,7 +739,7 @@ func TestGetMiniatureThemes_Success(t *testing.T) {
 		return expectedThemes, nil
 	}
 
-	w := performRequest(router, "GET", "/miniatures/themes", nil)
+	w := performRequest(t, router, "GET", "/miniatures/themes", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetMiniatureThemes() status = %d, want %d", w.Code, http.StatusOK)
@@ -755,7 +764,7 @@ func TestGetMiniatureThemes_Empty(t *testing.T) {
 		return []models.MiniatureTheme{}, nil
 	}
 
-	w := performRequest(router, "GET", "/miniatures/themes", nil)
+	w := performRequest(t, router, "GET", "/miniatures/themes", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("GetMiniatureThemes() status = %d, want %d", w.Code, http.StatusOK)
@@ -771,7 +780,7 @@ func TestGetMiniatureThemes_RepositoryError(t *testing.T) {
 		return nil, errors.New("database error")
 	}
 
-	w := performRequest(router, "GET", "/miniatures/themes", nil)
+	w := performRequest(t, router, "GET", "/miniatures/themes", nil)
 
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("GetMiniatureThemes() status = %d, want %d", w.Code, http.StatusInternalServerError)
@@ -782,9 +791,21 @@ func TestGetMiniatureThemes_RepositoryError(t *testing.T) {
 // Context Propagation Tests
 // =============================================================================
 
+type ctxKey struct{}
+
 func TestContextPropagation(t *testing.T) {
 	handler, mockRepo := setupTestHandler(t)
-	router := setupTestRouter(t)
+
+	gin.SetMode(gin.TestMode)
+	router := gin.New()
+
+	// Add middleware that injects a sentinel value into the context
+	router.Use(func(c *gin.Context) {
+		ctx := context.WithValue(c.Request.Context(), ctxKey{}, "test-marker")
+		c.Request = c.Request.WithContext(ctx)
+		c.Next()
+	})
+
 	router.GET("/certifications", handler.GetCertifications)
 
 	var receivedCtx context.Context
@@ -793,7 +814,7 @@ func TestContextPropagation(t *testing.T) {
 		return []models.Certification{}, nil
 	}
 
-	w := performRequest(router, "GET", "/certifications", nil)
+	w := performRequest(t, router, "GET", "/certifications", nil)
 
 	if w.Code != http.StatusOK {
 		t.Errorf("Request failed with status %d", w.Code)
@@ -801,6 +822,11 @@ func TestContextPropagation(t *testing.T) {
 
 	if receivedCtx == nil {
 		t.Error("Context was not propagated to repository")
+	}
+
+	// Verify the sentinel value was propagated through
+	if receivedCtx.Value(ctxKey{}) != "test-marker" {
+		t.Error("Context sentinel value was not propagated to repository")
 	}
 }
 
@@ -830,7 +856,7 @@ func TestInvalidIDFormats(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			w := performRequest(router, "GET", tt.path+tt.invalidID, nil)
+			w := performRequest(t, router, "GET", tt.path+tt.invalidID, nil)
 
 			if w.Code != http.StatusBadRequest {
 				t.Errorf("%s: status = %d, want %d", tt.name, w.Code, http.StatusBadRequest)
