@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
 	commondb "github.com/GunarsK-portfolio/portfolio-common/database"
 	"github.com/GunarsK-portfolio/portfolio-common/logger"
 	"github.com/GunarsK-portfolio/portfolio-common/metrics"
+	"github.com/GunarsK-portfolio/portfolio-common/server"
 	_ "github.com/GunarsK-portfolio/public-api/docs"
 	"github.com/GunarsK-portfolio/public-api/internal/config"
 	"github.com/GunarsK-portfolio/public-api/internal/handlers"
@@ -73,10 +73,12 @@ func main() {
 	// Setup routes
 	routes.Setup(router, handler, cfg, metricsCollector)
 
-	// Start server
+	// Start server with graceful shutdown
 	appLogger.Info("Public API ready", "port", cfg.ServiceConfig.Port, "environment", os.Getenv("ENVIRONMENT"))
-	if err := router.Run(fmt.Sprintf(":%s", cfg.ServiceConfig.Port)); err != nil {
-		appLogger.Error("Failed to start server", "error", err)
-		log.Fatal("Failed to start server:", err)
+
+	serverCfg := server.DefaultConfig(cfg.ServiceConfig.Port)
+	if err := server.Run(router, serverCfg, appLogger); err != nil {
+		appLogger.Error("Server error", "error", err)
+		log.Fatal("Server error:", err)
 	}
 }
