@@ -12,8 +12,8 @@ import (
 func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.MiniatureProject, error) {
 	var projects []models.MiniatureProject
 	err := r.db.WithContext(ctx).
-		Preload("Files.File").
-		Preload("Files", func(db *gorm.DB) *gorm.DB {
+		Preload("MiniatureFiles.File").
+		Preload("MiniatureFiles", func(db *gorm.DB) *gorm.DB {
 			return db.Order("display_order ASC")
 		}).
 		Order("display_order ASC, completed_date DESC").
@@ -22,10 +22,10 @@ func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.Mini
 		return nil, fmt.Errorf("failed to get all miniature projects: %w", err)
 	}
 
-	// Convert Files to Images for frontend
+	// Convert MiniatureFiles to Images for frontend
 	for i := range projects {
-		projects[i].Images = make([]models.Image, len(projects[i].Files))
-		for j, file := range projects[i].Files {
+		projects[i].Images = make([]models.Image, len(projects[i].MiniatureFiles))
+		for j, file := range projects[i].MiniatureFiles {
 			url := ""
 			if file.File != nil {
 				url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
@@ -44,8 +44,9 @@ func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.Mini
 func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*models.MiniatureProject, error) {
 	var project models.MiniatureProject
 	err := r.db.WithContext(ctx).
-		Preload("Files.File").
-		Preload("Files", func(db *gorm.DB) *gorm.DB {
+		Preload("Theme").
+		Preload("MiniatureFiles.File").
+		Preload("MiniatureFiles", func(db *gorm.DB) *gorm.DB {
 			return db.Order("display_order ASC")
 		}).
 		First(&project, id).Error
@@ -53,9 +54,9 @@ func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*mo
 		return nil, fmt.Errorf("failed to get miniature project by id %d: %w", id, err)
 	}
 
-	// Convert Files to Images for frontend
-	project.Images = make([]models.Image, len(project.Files))
-	for j, file := range project.Files {
+	// Convert MiniatureFiles to Images for frontend
+	project.Images = make([]models.Image, len(project.MiniatureFiles))
+	for j, file := range project.MiniatureFiles {
 		url := ""
 		if file.File != nil {
 			url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
@@ -73,6 +74,11 @@ func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*mo
 func (r *repository) GetAllMiniatureThemes(ctx context.Context) ([]models.MiniatureTheme, error) {
 	var themes []models.MiniatureTheme
 	err := r.db.WithContext(ctx).
+		Preload("CoverImageFile").
+		Preload("Miniatures.MiniatureFiles.File").
+		Preload("Miniatures.MiniatureFiles", func(db *gorm.DB) *gorm.DB {
+			return db.Order("display_order ASC")
+		}).
 		Preload("Miniatures", func(db *gorm.DB) *gorm.DB {
 			return db.Order("display_order ASC, completed_date DESC")
 		}).
@@ -81,5 +87,28 @@ func (r *repository) GetAllMiniatureThemes(ctx context.Context) ([]models.Miniat
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all miniature themes: %w", err)
 	}
+
+	// Populate URLs
+	for i := range themes {
+		utils.PopulateFileURL(themes[i].CoverImageFile, r.filesAPIURL)
+
+		// Convert MiniatureFiles to Images for each miniature
+		for j := range themes[i].Miniatures {
+			miniFiles := themes[i].Miniatures[j].MiniatureFiles
+			themes[i].Miniatures[j].Images = make([]models.Image, len(miniFiles))
+			for k, file := range miniFiles {
+				url := ""
+				if file.File != nil {
+					url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
+				}
+				themes[i].Miniatures[j].Images[k] = models.Image{
+					ID:      file.ID,
+					URL:     url,
+					Caption: file.Caption,
+				}
+			}
+		}
+	}
+
 	return themes, nil
 }

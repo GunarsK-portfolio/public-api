@@ -31,7 +31,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Certification"
+                                "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.Certification"
                             }
                         }
                     },
@@ -63,7 +63,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.WorkExperience"
+                                "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.WorkExperience"
                             }
                         }
                     },
@@ -118,7 +118,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.MiniatureProject"
+                                "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.MiniatureProject"
                             }
                         }
                     },
@@ -150,7 +150,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.MiniatureTheme"
+                                "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.MiniatureTheme"
                             }
                         }
                     },
@@ -189,7 +189,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.MiniatureProject"
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.MiniatureProject"
                         }
                     },
                     "400": {
@@ -236,7 +236,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Profile"
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.Profile"
                         }
                     },
                     "404": {
@@ -276,7 +276,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.PortfolioProject"
+                                "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.PortfolioProject"
                             }
                         }
                     },
@@ -315,7 +315,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.PortfolioProject"
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.PortfolioProject"
                         }
                     },
                     "400": {
@@ -364,7 +364,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Skill"
+                                "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.Skill"
                             }
                         }
                     },
@@ -382,8 +382,230 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.Certification": {
+        "github_com_GunarsK-portfolio_portfolio-common_models.Image": {
             "type": "object",
+            "properties": {
+                "caption": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProject": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "completedDate": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "difficulty": {
+                    "type": "string"
+                },
+                "displayOrder": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.Image"
+                    }
+                },
+                "manufacturer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "paints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MiniaturePaint"
+                    }
+                },
+                "scale": {
+                    "type": "string"
+                },
+                "techniques": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "theme": {
+                    "description": "Associations",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureTheme"
+                        }
+                    ]
+                },
+                "themeId": {
+                    "type": "integer"
+                },
+                "timeSpent": {
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_GunarsK-portfolio_portfolio-common_models.MiniatureTheme": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "coverImageFile": {
+                    "description": "Associations",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile"
+                        }
+                    ]
+                },
+                "coverImageId": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "displayOrder": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "miniatures": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProject"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_GunarsK-portfolio_portfolio-common_models.Skill": {
+            "type": "object",
+            "required": [
+                "skill",
+                "skillTypeId"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "displayOrder": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isVisible": {
+                    "type": "boolean"
+                },
+                "skill": {
+                    "type": "string"
+                },
+                "skillType": {
+                    "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.SkillType"
+                },
+                "skillTypeId": {
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "Computed field",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_GunarsK-portfolio_portfolio-common_models.SkillType": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "displayOrder": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_GunarsK-portfolio_portfolio-common_models.StorageFile": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "fileName": {
+                    "type": "string"
+                },
+                "fileSize": {
+                    "type": "integer"
+                },
+                "fileType": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "mimeType": {
+                    "type": "string"
+                },
+                "url": {
+                    "description": "Computed field",
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_GunarsK-portfolio_public-api_internal_models.Certification": {
+            "type": "object",
+            "required": [
+                "issueDate",
+                "issuer",
+                "name"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -414,22 +636,11 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Image": {
+        "github_com_GunarsK-portfolio_public-api_internal_models.MiniatureProject": {
             "type": "object",
-            "properties": {
-                "caption": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.MiniatureProject": {
-            "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "completedDate": {
                     "type": "string"
@@ -450,41 +661,44 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "images": {
-                    "description": "Computed for frontend",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Image"
+                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.Image"
                     }
                 },
                 "manufacturer": {
                     "type": "string"
                 },
                 "name": {
-                    "description": "Frontend expects \"name\"",
                     "type": "string"
                 },
                 "paints": {
-                    "description": "Loaded separately from junction table",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Paint"
+                        "$ref": "#/definitions/models.MiniaturePaint"
                     }
                 },
                 "scale": {
                     "type": "string"
                 },
                 "techniques": {
-                    "description": "Loaded separately from junction table",
                     "type": "array",
                     "items": {
                         "type": "string"
                     }
                 },
+                "theme": {
+                    "description": "Associations",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureTheme"
+                        }
+                    ]
+                },
                 "themeId": {
                     "type": "integer"
                 },
                 "timeSpent": {
-                    "description": "Hours as decimal",
                     "type": "number"
                 },
                 "updatedAt": {
@@ -492,12 +706,19 @@ const docTemplate = `{
                 }
             }
         },
-        "models.MiniatureTheme": {
+        "github_com_GunarsK-portfolio_public-api_internal_models.MiniatureTheme": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
-                "coverImage": {
-                    "description": "Computed URL field",
-                    "type": "string"
+                "coverImageFile": {
+                    "description": "Associations",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile"
+                        }
+                    ]
                 },
                 "coverImageId": {
                     "type": "integer"
@@ -517,7 +738,7 @@ const docTemplate = `{
                 "miniatures": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.MiniatureProject"
+                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProject"
                     }
                 },
                 "name": {
@@ -528,23 +749,11 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Paint": {
+        "github_com_GunarsK-portfolio_public-api_internal_models.PortfolioProject": {
             "type": "object",
-            "properties": {
-                "color": {
-                    "description": "Hex color code",
-                    "type": "string"
-                },
-                "manufacturer": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.PortfolioProject": {
-            "type": "object",
+            "required": [
+                "title"
+            ],
             "properties": {
                 "category": {
                     "type": "string"
@@ -582,9 +791,16 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "imageUrl": {
-                    "description": "Computed field",
-                    "type": "string"
+                "imageFile": {
+                    "description": "Associations",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile"
+                        }
+                    ]
+                },
+                "imageFileId": {
+                    "type": "integer"
                 },
                 "isOngoing": {
                     "type": "boolean"
@@ -613,7 +829,7 @@ const docTemplate = `{
                 "technologies": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Skill"
+                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.Skill"
                     }
                 },
                 "title": {
@@ -624,12 +840,22 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Profile": {
+        "github_com_GunarsK-portfolio_public-api_internal_models.Profile": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
-                "avatarUrl": {
-                    "description": "Computed field",
-                    "type": "string"
+                "avatarFile": {
+                    "description": "Now exposed to JSON",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile"
+                        }
+                    ]
+                },
+                "avatarFileId": {
+                    "type": "integer"
                 },
                 "createdAt": {
                     "type": "string"
@@ -641,23 +867,26 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "location": {
-                    "description": "Optional",
                     "type": "string"
                 },
                 "name": {
-                    "description": "Frontend expects \"name\"",
                     "type": "string"
                 },
                 "phone": {
-                    "description": "Optional",
                     "type": "string"
                 },
-                "resumeUrl": {
-                    "description": "Computed field",
-                    "type": "string"
+                "resumeFile": {
+                    "description": "Now exposed to JSON",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile"
+                        }
+                    ]
+                },
+                "resumeFileId": {
+                    "type": "integer"
                 },
                 "tagline": {
-                    "description": "Frontend expects \"tagline\" for short bio",
                     "type": "string"
                 },
                 "title": {
@@ -668,8 +897,12 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Skill": {
+        "github_com_GunarsK-portfolio_public-api_internal_models.Skill": {
             "type": "object",
+            "required": [
+                "skill",
+                "skillTypeId"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -686,11 +919,14 @@ const docTemplate = `{
                 "skill": {
                     "type": "string"
                 },
+                "skillType": {
+                    "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.SkillType"
+                },
                 "skillTypeId": {
                     "type": "integer"
                 },
                 "type": {
-                    "description": "Computed field for frontend",
+                    "description": "Computed field",
                     "type": "string"
                 },
                 "updatedAt": {
@@ -698,8 +934,13 @@ const docTemplate = `{
                 }
             }
         },
-        "models.WorkExperience": {
+        "github_com_GunarsK-portfolio_public-api_internal_models.WorkExperience": {
             "type": "object",
+            "required": [
+                "company",
+                "position",
+                "startDate"
+            ],
             "properties": {
                 "company": {
                     "type": "string"
@@ -723,6 +964,38 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "startDate": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MiniaturePaint": {
+            "type": "object",
+            "required": [
+                "manufacturer",
+                "name"
+            ],
+            "properties": {
+                "colorHex": {
+                    "description": "ColorHex is the hexadecimal color code in #RRGGBB or #RGB format (e.g., #FF5733, #F00)",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "manufacturer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "paintType": {
+                    "description": "PaintType categorizes the paint (Base, Layer, Shade, Wash, Contrast, Dry, Technical, Metallic, Air, Primer, Edge, Glaze, Ink)\nDatabase enforces these values via CHECK constraint",
                     "type": "string"
                 },
                 "updatedAt": {

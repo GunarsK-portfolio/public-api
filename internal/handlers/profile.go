@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	commonHandlers "github.com/GunarsK-portfolio/portfolio-common/handlers"
+	"github.com/GunarsK-portfolio/public-api/internal/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +18,7 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /profile [get]
 func (h *Handler) GetProfile(c *gin.Context) {
+	var profile *models.Profile
 	profile, err := h.repo.GetProfile(c.Request.Context())
 	if err != nil {
 		commonHandlers.HandleRepositoryError(c, err, "profile not found", "failed to fetch profile")

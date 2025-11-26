@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	commonHandlers "github.com/GunarsK-portfolio/portfolio-common/handlers"
+	"github.com/GunarsK-portfolio/public-api/internal/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +18,7 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /projects [get]
 func (h *Handler) GetProjects(c *gin.Context) {
+	var projects []models.PortfolioProject
 	projects, err := h.repo.GetAllProjects(c.Request.Context())
 	if err != nil {
 		commonHandlers.LogAndRespondError(c, http.StatusInternalServerError, err, "failed to fetch projects")
@@ -44,7 +46,8 @@ func (h *Handler) GetProjectByID(c *gin.Context) {
 		return
 	}
 
-	project, err := h.repo.GetProjectByID(c.Request.Context(), id)
+	var project *models.PortfolioProject
+	project, err = h.repo.GetProjectByID(c.Request.Context(), id)
 	if err != nil {
 		commonHandlers.HandleRepositoryError(c, err, "project not found", "failed to fetch project")
 		return
