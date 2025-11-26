@@ -9,6 +9,31 @@ definitions:
       url:
         type: string
     type: object
+  github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint:
+    properties:
+      colorHex:
+        description: 'ColorHex is the hexadecimal color code in #RRGGBB or #RGB format
+          (e.g., #FF5733, #F00)'
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      manufacturer:
+        type: string
+      name:
+        type: string
+      paintType:
+        description: |-
+          PaintType categorizes the paint (Base, Layer, Shade, Wash, Contrast, Dry, Technical, Metallic, Air, Primer, Edge, Glaze, Ink)
+          Database enforces these values via CHECK constraint
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - manufacturer
+    - name
+    type: object
   github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProject:
     properties:
       completedDate:
@@ -33,7 +58,7 @@ definitions:
         type: string
       paints:
         items:
-          $ref: '#/definitions/models.MiniaturePaint'
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint'
         type: array
       scale:
         type: string
@@ -190,7 +215,7 @@ definitions:
         type: string
       paints:
         items:
-          $ref: '#/definitions/models.MiniaturePaint'
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint'
         type: array
       scale:
         type: string
@@ -381,31 +406,6 @@ definitions:
     - company
     - position
     - startDate
-    type: object
-  models.MiniaturePaint:
-    properties:
-      colorHex:
-        description: 'ColorHex is the hexadecimal color code in #RRGGBB or #RGB format
-          (e.g., #FF5733, #F00)'
-        type: string
-      createdAt:
-        type: string
-      id:
-        type: integer
-      manufacturer:
-        type: string
-      name:
-        type: string
-      paintType:
-        description: |-
-          PaintType categorizes the paint (Base, Layer, Shade, Wash, Contrast, Dry, Technical, Metallic, Air, Primer, Edge, Glaze, Ink)
-          Database enforces these values via CHECK constraint
-        type: string
-      updatedAt:
-        type: string
-    required:
-    - manufacturer
-    - name
     type: object
 host: localhost:8082
 info:

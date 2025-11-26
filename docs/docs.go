@@ -396,6 +396,38 @@ const docTemplate = `{
                 }
             }
         },
+        "github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint": {
+            "type": "object",
+            "required": [
+                "manufacturer",
+                "name"
+            ],
+            "properties": {
+                "colorHex": {
+                    "description": "ColorHex is the hexadecimal color code in #RRGGBB or #RGB format (e.g., #FF5733, #F00)",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "manufacturer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "paintType": {
+                    "description": "PaintType categorizes the paint (Base, Layer, Shade, Wash, Contrast, Dry, Technical, Metallic, Air, Primer, Edge, Glaze, Ink)\nDatabase enforces these values via CHECK constraint",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProject": {
             "type": "object",
             "required": [
@@ -435,7 +467,7 @@ const docTemplate = `{
                 "paints": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.MiniaturePaint"
+                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint"
                     }
                 },
                 "scale": {
@@ -675,7 +707,7 @@ const docTemplate = `{
                 "paints": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.MiniaturePaint"
+                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint"
                     }
                 },
                 "scale": {
@@ -964,38 +996,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "startDate": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.MiniaturePaint": {
-            "type": "object",
-            "required": [
-                "manufacturer",
-                "name"
-            ],
-            "properties": {
-                "colorHex": {
-                    "description": "ColorHex is the hexadecimal color code in #RRGGBB or #RGB format (e.g., #FF5733, #F00)",
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "manufacturer": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "paintType": {
-                    "description": "PaintType categorizes the paint (Base, Layer, Shade, Wash, Contrast, Dry, Technical, Metallic, Air, Primer, Edge, Glaze, Ink)\nDatabase enforces these values via CHECK constraint",
                     "type": "string"
                 },
                 "updatedAt": {

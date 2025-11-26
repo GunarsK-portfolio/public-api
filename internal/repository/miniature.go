@@ -9,6 +9,23 @@ import (
 	"gorm.io/gorm"
 )
 
+// convertMiniatureFilesToImages transforms MiniatureFiles into frontend Image structures
+func (r *repository) convertMiniatureFilesToImages(miniFiles []models.MiniatureFile) []models.Image {
+	images := make([]models.Image, len(miniFiles))
+	for i, file := range miniFiles {
+		url := ""
+		if file.File != nil {
+			url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
+		}
+		images[i] = models.Image{
+			ID:      file.ID,
+			URL:     url,
+			Caption: file.Caption,
+		}
+	}
+	return images
+}
+
 func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.MiniatureProject, error) {
 	var projects []models.MiniatureProject
 	err := r.db.WithContext(ctx).
@@ -24,18 +41,7 @@ func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.Mini
 
 	// Convert MiniatureFiles to Images for frontend
 	for i := range projects {
-		projects[i].Images = make([]models.Image, len(projects[i].MiniatureFiles))
-		for j, file := range projects[i].MiniatureFiles {
-			url := ""
-			if file.File != nil {
-				url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
-			}
-			projects[i].Images[j] = models.Image{
-				ID:      file.ID,
-				URL:     url,
-				Caption: file.Caption,
-			}
-		}
+		projects[i].Images = r.convertMiniatureFilesToImages(projects[i].MiniatureFiles)
 	}
 
 	return projects, nil
@@ -55,18 +61,7 @@ func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*mo
 	}
 
 	// Convert MiniatureFiles to Images for frontend
-	project.Images = make([]models.Image, len(project.MiniatureFiles))
-	for j, file := range project.MiniatureFiles {
-		url := ""
-		if file.File != nil {
-			url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
-		}
-		project.Images[j] = models.Image{
-			ID:      file.ID,
-			URL:     url,
-			Caption: file.Caption,
-		}
-	}
+	project.Images = r.convertMiniatureFilesToImages(project.MiniatureFiles)
 
 	return &project, nil
 }
@@ -94,19 +89,7 @@ func (r *repository) GetAllMiniatureThemes(ctx context.Context) ([]models.Miniat
 
 		// Convert MiniatureFiles to Images for each miniature
 		for j := range themes[i].Miniatures {
-			miniFiles := themes[i].Miniatures[j].MiniatureFiles
-			themes[i].Miniatures[j].Images = make([]models.Image, len(miniFiles))
-			for k, file := range miniFiles {
-				url := ""
-				if file.File != nil {
-					url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
-				}
-				themes[i].Miniatures[j].Images[k] = models.Image{
-					ID:      file.ID,
-					URL:     url,
-					Caption: file.Caption,
-				}
-			}
+			themes[i].Miniatures[j].Images = r.convertMiniatureFilesToImages(themes[i].Miniatures[j].MiniatureFiles)
 		}
 	}
 
