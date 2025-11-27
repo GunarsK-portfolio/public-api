@@ -492,7 +492,7 @@ paths:
       summary: Get all miniature projects
       tags:
       - miniatures
-  /miniatures/{id}:
+  /miniatures/projects/{id}:
     get:
       description: Get detailed information about a specific miniature project
       parameters:
@@ -531,7 +531,7 @@ paths:
       - miniatures
   /miniatures/themes:
     get:
-      description: Get list of all miniature themes with their associated projects
+      description: Get list of all miniature themes with cover images
       produces:
       - application/json
       responses:
@@ -547,7 +547,45 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Get all miniature themes with projects
+      summary: Get all miniature themes
+      tags:
+      - miniatures
+  /miniatures/themes/{id}:
+    get:
+      description: Get detailed information about a specific miniature theme with
+        its projects
+      parameters:
+      - description: Miniature Theme ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.MiniatureTheme'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get miniature theme by ID
       tags:
       - miniatures
   /profile:

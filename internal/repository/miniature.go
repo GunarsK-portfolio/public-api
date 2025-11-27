@@ -9,23 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// convertMiniatureFilesToImages transforms MiniatureFiles into frontend Image structures
-func (r *repository) convertMiniatureFilesToImages(miniFiles []models.MiniatureFile) []models.Image {
-	images := make([]models.Image, len(miniFiles))
-	for i, file := range miniFiles {
-		url := ""
-		if file.File != nil {
-			url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
-		}
-		images[i] = models.Image{
-			ID:      file.ID,
-			URL:     url,
-			Caption: file.Caption,
-		}
-	}
-	return images
-}
-
 func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.MiniatureProject, error) {
 	var projects []models.MiniatureProject
 	err := r.db.WithContext(ctx).
@@ -41,7 +24,7 @@ func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.Mini
 
 	// Convert MiniatureFiles to Images for frontend
 	for i := range projects {
-		projects[i].Images = r.convertMiniatureFilesToImages(projects[i].MiniatureFiles)
+		projects[i].Images = utils.ConvertMiniatureFilesToImages(projects[i].MiniatureFiles, r.filesAPIURL)
 	}
 
 	return projects, nil
@@ -61,13 +44,31 @@ func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*mo
 	}
 
 	// Convert MiniatureFiles to Images for frontend
-	project.Images = r.convertMiniatureFilesToImages(project.MiniatureFiles)
+	project.Images = utils.ConvertMiniatureFilesToImages(project.MiniatureFiles, r.filesAPIURL)
 
 	return &project, nil
 }
 
 func (r *repository) GetAllMiniatureThemes(ctx context.Context) ([]models.MiniatureTheme, error) {
 	var themes []models.MiniatureTheme
+	err := r.db.WithContext(ctx).
+		Preload("CoverImageFile").
+		Order("display_order ASC").
+		Find(&themes).Error
+	if err != nil {
+		return nil, fmt.Errorf("failed to get all miniature themes: %w", err)
+	}
+
+	// Populate cover image URLs
+	for i := range themes {
+		utils.PopulateFileURL(themes[i].CoverImageFile, r.filesAPIURL)
+	}
+
+	return themes, nil
+}
+
+func (r *repository) GetMiniatureThemeByID(ctx context.Context, id int64) (*models.MiniatureTheme, error) {
+	var theme models.MiniatureTheme
 	err := r.db.WithContext(ctx).
 		Preload("CoverImageFile").
 		Preload("Miniatures.MiniatureFiles.File").
@@ -77,21 +78,18 @@ func (r *repository) GetAllMiniatureThemes(ctx context.Context) ([]models.Miniat
 		Preload("Miniatures", func(db *gorm.DB) *gorm.DB {
 			return db.Order("display_order ASC, completed_date DESC")
 		}).
-		Order("display_order ASC").
-		Find(&themes).Error
+		First(&theme, id).Error
 	if err != nil {
-		return nil, fmt.Errorf("failed to get all miniature themes: %w", err)
+		return nil, fmt.Errorf("failed to get miniature theme by id %d: %w", id, err)
 	}
 
-	// Populate URLs
-	for i := range themes {
-		utils.PopulateFileURL(themes[i].CoverImageFile, r.filesAPIURL)
+	// Populate cover image URL
+	utils.PopulateFileURL(theme.CoverImageFile, r.filesAPIURL)
 
-		// Convert MiniatureFiles to Images for each miniature
-		for j := range themes[i].Miniatures {
-			themes[i].Miniatures[j].Images = r.convertMiniatureFilesToImages(themes[i].Miniatures[j].MiniatureFiles)
-		}
+	// Convert MiniatureFiles to Images for each miniature
+	for i := range theme.Miniatures {
+		theme.Miniatures[i].Images = utils.ConvertMiniatureFilesToImages(theme.Miniatures[i].MiniatureFiles, r.filesAPIURL)
 	}
 
-	return themes, nil
+	return &theme, nil
 }

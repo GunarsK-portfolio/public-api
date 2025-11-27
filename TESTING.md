@@ -30,7 +30,7 @@ go test -v -run Miniature ./internal/handlers/
 
 ## Test Files
 
-**`handler_test.go`** - 30 tests
+**`handler_test.go`** - 34 tests
 
 | Category | Tests | Coverage |
 |----------|-------|----------|
@@ -40,7 +40,7 @@ go test -v -run Miniature ./internal/handlers/
 | Skills | 2 | GetAll + error cases |
 | Projects | 7 | GetAll, GetByID + error cases |
 | Miniatures | 6 | GetAll, GetByID + error cases |
-| Miniature Themes | 3 | GetAll + error cases |
+| Miniature Themes | 7 | GetAll, GetByID + error cases |
 | Context Propagation | 1 | Verifies context with sentinel value |
 | ID Validation | 1 | Table-driven invalid ID format tests |
 | Constructor | 1 | Handler initialization |

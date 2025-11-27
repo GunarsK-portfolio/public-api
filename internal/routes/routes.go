@@ -37,9 +37,9 @@ func Setup(router *gin.Engine, handler *handlers.Handler, cfg *config.Config, me
 		v1.GET("/skills", handler.GetSkills)
 		v1.GET("/projects", handler.GetProjects)
 		v1.GET("/projects/:id", handler.GetProjectByID)
-		v1.GET("/miniatures", handler.GetMiniatures)
-		v1.GET("/miniatures/:id", handler.GetMiniatureByID)
 		v1.GET("/miniatures/themes", handler.GetMiniatureThemes)
+		v1.GET("/miniatures/themes/:id", handler.GetMiniatureThemeByID)
+		v1.GET("/miniatures/projects/:id", handler.GetMiniatureByID)
 	}
 
 	// Swagger documentation (only if SWAGGER_HOST is configured)
