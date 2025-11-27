@@ -12,11 +12,13 @@ import (
 func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.MiniatureProject, error) {
 	var projects []models.MiniatureProject
 	err := r.db.WithContext(ctx).
-		Preload("MiniatureFiles.File").
 		Preload("MiniatureFiles", func(db *gorm.DB) *gorm.DB {
-			return db.Order("display_order ASC")
+			return db.Order("miniatures.miniature_files.display_order ASC, miniatures.miniature_files.id ASC")
 		}).
-		Order("display_order ASC, completed_date DESC").
+		Preload("MiniatureFiles.File").
+		Preload("Techniques.Technique").
+		Preload("Paints.Paint").
+		Order("display_order ASC, id ASC").
 		Find(&projects).Error
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all miniature projects: %w", err)
@@ -34,10 +36,12 @@ func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*mo
 	var project models.MiniatureProject
 	err := r.db.WithContext(ctx).
 		Preload("Theme").
-		Preload("MiniatureFiles.File").
 		Preload("MiniatureFiles", func(db *gorm.DB) *gorm.DB {
-			return db.Order("display_order ASC")
+			return db.Order("miniatures.miniature_files.display_order ASC, miniatures.miniature_files.id ASC")
 		}).
+		Preload("MiniatureFiles.File").
+		Preload("Techniques.Technique").
+		Preload("Paints.Paint").
 		First(&project, id).Error
 	if err != nil {
 		return nil, fmt.Errorf("failed to get miniature project by id %d: %w", id, err)
@@ -53,7 +57,7 @@ func (r *repository) GetAllMiniatureThemes(ctx context.Context) ([]models.Miniat
 	var themes []models.MiniatureTheme
 	err := r.db.WithContext(ctx).
 		Preload("CoverImageFile").
-		Order("display_order ASC").
+		Order("display_order ASC, id ASC").
 		Find(&themes).Error
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all miniature themes: %w", err)
@@ -71,13 +75,15 @@ func (r *repository) GetMiniatureThemeByID(ctx context.Context, id int64) (*mode
 	var theme models.MiniatureTheme
 	err := r.db.WithContext(ctx).
 		Preload("CoverImageFile").
-		Preload("Miniatures.MiniatureFiles.File").
-		Preload("Miniatures.MiniatureFiles", func(db *gorm.DB) *gorm.DB {
-			return db.Order("display_order ASC")
-		}).
 		Preload("Miniatures", func(db *gorm.DB) *gorm.DB {
-			return db.Order("display_order ASC, completed_date DESC")
+			return db.Order("display_order ASC, id ASC")
 		}).
+		Preload("Miniatures.MiniatureFiles", func(db *gorm.DB) *gorm.DB {
+			return db.Order("miniatures.miniature_files.display_order ASC, miniatures.miniature_files.id ASC")
+		}).
+		Preload("Miniatures.MiniatureFiles.File").
+		Preload("Miniatures.Techniques.Technique").
+		Preload("Miniatures.Paints.Paint").
 		First(&theme, id).Error
 	if err != nil {
 		return nil, fmt.Errorf("failed to get miniature theme by id %d: %w", id, err)
