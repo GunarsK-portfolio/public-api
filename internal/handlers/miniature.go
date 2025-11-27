@@ -92,8 +92,7 @@ func (h *Handler) GetMiniatureThemeByID(c *gin.Context) {
 		return
 	}
 
-	var theme *models.MiniatureTheme
-	theme, err = h.repo.GetMiniatureThemeByID(c.Request.Context(), id)
+	theme, err := h.repo.GetMiniatureThemeByID(c.Request.Context(), id)
 	if err != nil {
 		commonHandlers.HandleRepositoryError(c, err, "miniature theme not found", "failed to fetch miniature theme")
 		return
