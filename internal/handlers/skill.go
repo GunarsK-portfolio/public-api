@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	commonHandlers "github.com/GunarsK-portfolio/portfolio-common/handlers"
+	"github.com/GunarsK-portfolio/public-api/internal/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,6 +17,7 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /skills [get]
 func (h *Handler) GetSkills(c *gin.Context) {
+	var skills []models.Skill
 	skills, err := h.repo.GetAllSkills(c.Request.Context())
 	if err != nil {
 		commonHandlers.LogAndRespondError(c, http.StatusInternalServerError, err, "failed to fetch skills")

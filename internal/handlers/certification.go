@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	commonHandlers "github.com/GunarsK-portfolio/portfolio-common/handlers"
+	"github.com/GunarsK-portfolio/public-api/internal/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,6 +17,7 @@ import (
 // @Failure 500 {object} map[string]string
 // @Router /certifications [get]
 func (h *Handler) GetCertifications(c *gin.Context) {
+	var certifications []models.Certification
 	certifications, err := h.repo.GetAllCertifications(c.Request.Context())
 	if err != nil {
 		commonHandlers.LogAndRespondError(c, http.StatusInternalServerError, err, "failed to fetch certifications")

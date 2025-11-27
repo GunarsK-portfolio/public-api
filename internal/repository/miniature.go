@@ -9,11 +9,28 @@ import (
 	"gorm.io/gorm"
 )
 
+// convertMiniatureFilesToImages transforms MiniatureFiles into frontend Image structures
+func (r *repository) convertMiniatureFilesToImages(miniFiles []models.MiniatureFile) []models.Image {
+	images := make([]models.Image, len(miniFiles))
+	for i, file := range miniFiles {
+		url := ""
+		if file.File != nil {
+			url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
+		}
+		images[i] = models.Image{
+			ID:      file.ID,
+			URL:     url,
+			Caption: file.Caption,
+		}
+	}
+	return images
+}
+
 func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.MiniatureProject, error) {
 	var projects []models.MiniatureProject
 	err := r.db.WithContext(ctx).
-		Preload("Files.File").
-		Preload("Files", func(db *gorm.DB) *gorm.DB {
+		Preload("MiniatureFiles.File").
+		Preload("MiniatureFiles", func(db *gorm.DB) *gorm.DB {
 			return db.Order("display_order ASC")
 		}).
 		Order("display_order ASC, completed_date DESC").
@@ -22,20 +39,9 @@ func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.Mini
 		return nil, fmt.Errorf("failed to get all miniature projects: %w", err)
 	}
 
-	// Convert Files to Images for frontend
+	// Convert MiniatureFiles to Images for frontend
 	for i := range projects {
-		projects[i].Images = make([]models.Image, len(projects[i].Files))
-		for j, file := range projects[i].Files {
-			url := ""
-			if file.File != nil {
-				url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
-			}
-			projects[i].Images[j] = models.Image{
-				ID:      file.ID,
-				URL:     url,
-				Caption: file.Caption,
-			}
-		}
+		projects[i].Images = r.convertMiniatureFilesToImages(projects[i].MiniatureFiles)
 	}
 
 	return projects, nil
@@ -44,8 +50,9 @@ func (r *repository) GetAllMiniatureProjects(ctx context.Context) ([]models.Mini
 func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*models.MiniatureProject, error) {
 	var project models.MiniatureProject
 	err := r.db.WithContext(ctx).
-		Preload("Files.File").
-		Preload("Files", func(db *gorm.DB) *gorm.DB {
+		Preload("Theme").
+		Preload("MiniatureFiles.File").
+		Preload("MiniatureFiles", func(db *gorm.DB) *gorm.DB {
 			return db.Order("display_order ASC")
 		}).
 		First(&project, id).Error
@@ -53,19 +60,8 @@ func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*mo
 		return nil, fmt.Errorf("failed to get miniature project by id %d: %w", id, err)
 	}
 
-	// Convert Files to Images for frontend
-	project.Images = make([]models.Image, len(project.Files))
-	for j, file := range project.Files {
-		url := ""
-		if file.File != nil {
-			url = utils.BuildFileURL(r.filesAPIURL, file.File.FileType, file.File.S3Key)
-		}
-		project.Images[j] = models.Image{
-			ID:      file.ID,
-			URL:     url,
-			Caption: file.Caption,
-		}
-	}
+	// Convert MiniatureFiles to Images for frontend
+	project.Images = r.convertMiniatureFilesToImages(project.MiniatureFiles)
 
 	return &project, nil
 }
@@ -73,6 +69,11 @@ func (r *repository) GetMiniatureProjectByID(ctx context.Context, id int64) (*mo
 func (r *repository) GetAllMiniatureThemes(ctx context.Context) ([]models.MiniatureTheme, error) {
 	var themes []models.MiniatureTheme
 	err := r.db.WithContext(ctx).
+		Preload("CoverImageFile").
+		Preload("Miniatures.MiniatureFiles.File").
+		Preload("Miniatures.MiniatureFiles", func(db *gorm.DB) *gorm.DB {
+			return db.Order("display_order ASC")
+		}).
 		Preload("Miniatures", func(db *gorm.DB) *gorm.DB {
 			return db.Order("display_order ASC, completed_date DESC")
 		}).
@@ -81,5 +82,16 @@ func (r *repository) GetAllMiniatureThemes(ctx context.Context) ([]models.Miniat
 	if err != nil {
 		return nil, fmt.Errorf("failed to get all miniature themes: %w", err)
 	}
+
+	// Populate URLs
+	for i := range themes {
+		utils.PopulateFileURL(themes[i].CoverImageFile, r.filesAPIURL)
+
+		// Convert MiniatureFiles to Images for each miniature
+		for j := range themes[i].Miniatures {
+			themes[i].Miniatures[j].Images = r.convertMiniatureFilesToImages(themes[i].Miniatures[j].MiniatureFiles)
+		}
+	}
+
 	return themes, nil
 }

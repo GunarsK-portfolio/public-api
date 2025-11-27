@@ -1,6 +1,172 @@
 basePath: /api/v1
 definitions:
-  models.Certification:
+  github_com_GunarsK-portfolio_portfolio-common_models.Image:
+    properties:
+      caption:
+        type: string
+      id:
+        type: integer
+      url:
+        type: string
+    type: object
+  github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint:
+    properties:
+      colorHex:
+        description: 'ColorHex is the hexadecimal color code in #RRGGBB or #RGB format
+          (e.g., #FF5733, #F00)'
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      manufacturer:
+        type: string
+      name:
+        type: string
+      paintType:
+        description: |-
+          PaintType categorizes the paint (Base, Layer, Shade, Wash, Contrast, Dry, Technical, Metallic, Air, Primer, Edge, Glaze, Ink)
+          Database enforces these values via CHECK constraint
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - manufacturer
+    - name
+    type: object
+  github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProject:
+    properties:
+      completedDate:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      difficulty:
+        type: string
+      displayOrder:
+        type: integer
+      id:
+        type: integer
+      images:
+        items:
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.Image'
+        type: array
+      manufacturer:
+        type: string
+      name:
+        type: string
+      paints:
+        items:
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint'
+        type: array
+      scale:
+        type: string
+      techniques:
+        items:
+          type: string
+        type: array
+      theme:
+        allOf:
+        - $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureTheme'
+        description: Associations
+      themeId:
+        type: integer
+      timeSpent:
+        type: number
+      updatedAt:
+        type: string
+    required:
+    - name
+    type: object
+  github_com_GunarsK-portfolio_portfolio-common_models.MiniatureTheme:
+    properties:
+      coverImageFile:
+        allOf:
+        - $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile'
+        description: Associations
+      coverImageId:
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      displayOrder:
+        type: integer
+      id:
+        type: integer
+      miniatures:
+        items:
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProject'
+        type: array
+      name:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - name
+    type: object
+  github_com_GunarsK-portfolio_portfolio-common_models.Skill:
+    properties:
+      createdAt:
+        type: string
+      displayOrder:
+        type: integer
+      id:
+        type: integer
+      isVisible:
+        type: boolean
+      skill:
+        type: string
+      skillType:
+        $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.SkillType'
+      skillTypeId:
+        type: integer
+      type:
+        description: Computed field
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - skill
+    - skillTypeId
+    type: object
+  github_com_GunarsK-portfolio_portfolio-common_models.SkillType:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      displayOrder:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - name
+    type: object
+  github_com_GunarsK-portfolio_portfolio-common_models.StorageFile:
+    properties:
+      createdAt:
+        type: string
+      fileName:
+        type: string
+      fileSize:
+        type: integer
+      fileType:
+        type: string
+      id:
+        type: integer
+      mimeType:
+        type: string
+      url:
+        description: Computed field
+        type: string
+    type: object
+  github_com_GunarsK-portfolio_public-api_internal_models.Certification:
     properties:
       createdAt:
         type: string
@@ -20,17 +186,12 @@ definitions:
         type: string
       updatedAt:
         type: string
+    required:
+    - issueDate
+    - issuer
+    - name
     type: object
-  models.Image:
-    properties:
-      caption:
-        type: string
-      id:
-        type: integer
-      url:
-        type: string
-    type: object
-  models.MiniatureProject:
+  github_com_GunarsK-portfolio_public-api_internal_models.MiniatureProject:
     properties:
       completedDate:
         type: string
@@ -45,40 +206,42 @@ definitions:
       id:
         type: integer
       images:
-        description: Computed for frontend
         items:
-          $ref: '#/definitions/models.Image'
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.Image'
         type: array
       manufacturer:
         type: string
       name:
-        description: Frontend expects "name"
         type: string
       paints:
-        description: Loaded separately from junction table
         items:
-          $ref: '#/definitions/models.Paint'
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint'
         type: array
       scale:
         type: string
       techniques:
-        description: Loaded separately from junction table
         items:
           type: string
         type: array
+      theme:
+        allOf:
+        - $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureTheme'
+        description: Associations
       themeId:
         type: integer
       timeSpent:
-        description: Hours as decimal
         type: number
       updatedAt:
         type: string
+    required:
+    - name
     type: object
-  models.MiniatureTheme:
+  github_com_GunarsK-portfolio_public-api_internal_models.MiniatureTheme:
     properties:
-      coverImage:
-        description: Computed URL field
-        type: string
+      coverImageFile:
+        allOf:
+        - $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile'
+        description: Associations
       coverImageId:
         type: integer
       createdAt:
@@ -91,24 +254,16 @@ definitions:
         type: integer
       miniatures:
         items:
-          $ref: '#/definitions/models.MiniatureProject'
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProject'
         type: array
       name:
         type: string
       updatedAt:
         type: string
+    required:
+    - name
     type: object
-  models.Paint:
-    properties:
-      color:
-        description: Hex color code
-        type: string
-      manufacturer:
-        type: string
-      name:
-        type: string
-    type: object
-  models.PortfolioProject:
+  github_com_GunarsK-portfolio_public-api_internal_models.PortfolioProject:
     properties:
       category:
         type: string
@@ -134,9 +289,12 @@ definitions:
         type: string
       id:
         type: integer
-      imageUrl:
-        description: Computed field
-        type: string
+      imageFile:
+        allOf:
+        - $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile'
+        description: Associations
+      imageFileId:
+        type: integer
       isOngoing:
         type: boolean
       learnings:
@@ -155,18 +313,23 @@ definitions:
         type: integer
       technologies:
         items:
-          $ref: '#/definitions/models.Skill'
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.Skill'
         type: array
       title:
         type: string
       updatedAt:
         type: string
+    required:
+    - title
     type: object
-  models.Profile:
+  github_com_GunarsK-portfolio_public-api_internal_models.Profile:
     properties:
-      avatarUrl:
-        description: Computed field
-        type: string
+      avatarFile:
+        allOf:
+        - $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile'
+        description: Now exposed to JSON
+      avatarFileId:
+        type: integer
       createdAt:
         type: string
       email:
@@ -174,26 +337,27 @@ definitions:
       id:
         type: integer
       location:
-        description: Optional
         type: string
       name:
-        description: Frontend expects "name"
         type: string
       phone:
-        description: Optional
         type: string
-      resumeUrl:
-        description: Computed field
-        type: string
+      resumeFile:
+        allOf:
+        - $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile'
+        description: Now exposed to JSON
+      resumeFileId:
+        type: integer
       tagline:
-        description: Frontend expects "tagline" for short bio
         type: string
       title:
         type: string
       updatedAt:
         type: string
+    required:
+    - name
     type: object
-  models.Skill:
+  github_com_GunarsK-portfolio_public-api_internal_models.Skill:
     properties:
       createdAt:
         type: string
@@ -205,15 +369,20 @@ definitions:
         type: boolean
       skill:
         type: string
+      skillType:
+        $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.SkillType'
       skillTypeId:
         type: integer
       type:
-        description: Computed field for frontend
+        description: Computed field
         type: string
       updatedAt:
         type: string
+    required:
+    - skill
+    - skillTypeId
     type: object
-  models.WorkExperience:
+  github_com_GunarsK-portfolio_public-api_internal_models.WorkExperience:
     properties:
       company:
         type: string
@@ -233,6 +402,10 @@ definitions:
         type: string
       updatedAt:
         type: string
+    required:
+    - company
+    - position
+    - startDate
     type: object
 host: localhost:8082
 info:
@@ -251,7 +424,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Certification'
+              $ref: '#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.Certification'
             type: array
         "500":
           description: Internal Server Error
@@ -272,7 +445,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.WorkExperience'
+              $ref: '#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.WorkExperience'
             type: array
         "500":
           description: Internal Server Error
@@ -308,7 +481,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.MiniatureProject'
+              $ref: '#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.MiniatureProject'
             type: array
         "500":
           description: Internal Server Error
@@ -334,7 +507,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.MiniatureProject'
+            $ref: '#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.MiniatureProject'
         "400":
           description: Bad Request
           schema:
@@ -366,7 +539,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.MiniatureTheme'
+              $ref: '#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.MiniatureTheme'
             type: array
         "500":
           description: Internal Server Error
@@ -386,7 +559,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Profile'
+            $ref: '#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.Profile'
         "404":
           description: Not Found
           schema:
@@ -412,7 +585,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.PortfolioProject'
+              $ref: '#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.PortfolioProject'
             type: array
         "500":
           description: Internal Server Error
@@ -438,7 +611,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.PortfolioProject'
+            $ref: '#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.PortfolioProject'
         "400":
           description: Bad Request
           schema:
@@ -470,7 +643,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Skill'
+              $ref: '#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.Skill'
             type: array
         "500":
           description: Internal Server Error
