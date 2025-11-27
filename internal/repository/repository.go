@@ -17,6 +17,7 @@ type Repository interface {
 	GetAllMiniatureProjects(ctx context.Context) ([]models.MiniatureProject, error)
 	GetMiniatureProjectByID(ctx context.Context, id int64) (*models.MiniatureProject, error)
 	GetAllMiniatureThemes(ctx context.Context) ([]models.MiniatureTheme, error)
+	GetMiniatureThemeByID(ctx context.Context, id int64) (*models.MiniatureTheme, error)
 }
 
 type repository struct {

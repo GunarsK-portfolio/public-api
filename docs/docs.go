@@ -134,39 +134,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/miniatures/themes": {
-            "get": {
-                "description": "Get list of all miniature themes with their associated projects",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "miniatures"
-                ],
-                "summary": "Get all miniature themes with projects",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.MiniatureTheme"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/miniatures/{id}": {
+        "/miniatures/projects/{id}": {
             "get": {
                 "description": "Get detailed information about a specific miniature project",
                 "produces": [
@@ -190,6 +158,94 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.MiniatureProject"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/miniatures/themes": {
+            "get": {
+                "description": "Get list of all miniature themes with cover images",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "miniatures"
+                ],
+                "summary": "Get all miniature themes",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.MiniatureTheme"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/miniatures/themes/{id}": {
+            "get": {
+                "description": "Get detailed information about a specific miniature theme with its projects",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "miniatures"
+                ],
+                "summary": "Get miniature theme by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Miniature Theme ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_public-api_internal_models.MiniatureTheme"
                         }
                     },
                     "400": {

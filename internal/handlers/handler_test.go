@@ -46,6 +46,7 @@ type mockRepository struct {
 	getAllMiniatureProjectsFunc func(ctx context.Context) ([]models.MiniatureProject, error)
 	getMiniatureProjectByIDFunc func(ctx context.Context, id int64) (*models.MiniatureProject, error)
 	getAllMiniatureThemesFunc   func(ctx context.Context) ([]models.MiniatureTheme, error)
+	getMiniatureThemeByIDFunc   func(ctx context.Context, id int64) (*models.MiniatureTheme, error)
 }
 
 func (m *mockRepository) GetProfile(ctx context.Context) (*models.Profile, error) {
@@ -107,6 +108,13 @@ func (m *mockRepository) GetMiniatureProjectByID(ctx context.Context, id int64) 
 func (m *mockRepository) GetAllMiniatureThemes(ctx context.Context) ([]models.MiniatureTheme, error) {
 	if m.getAllMiniatureThemesFunc != nil {
 		return m.getAllMiniatureThemesFunc(ctx)
+	}
+	return nil, errors.New("not implemented")
+}
+
+func (m *mockRepository) GetMiniatureThemeByID(ctx context.Context, id int64) (*models.MiniatureTheme, error) {
+	if m.getMiniatureThemeByIDFunc != nil {
+		return m.getMiniatureThemeByIDFunc(ctx, id)
 	}
 	return nil, errors.New("not implemented")
 }
@@ -787,6 +795,76 @@ func TestGetMiniatureThemes_RepositoryError(t *testing.T) {
 	}
 }
 
+func TestGetMiniatureThemeByID_Success(t *testing.T) {
+	handler, mockRepo := setupTestHandler(t)
+	router := setupTestRouter(t)
+	router.GET("/miniatures/themes/:id", handler.GetMiniatureThemeByID)
+
+	expectedTheme := createTestMiniatureTheme()
+	mockRepo.getMiniatureThemeByIDFunc = func(ctx context.Context, id int64) (*models.MiniatureTheme, error) {
+		return &expectedTheme, nil
+	}
+
+	w := performRequest(t, router, "GET", "/miniatures/themes/1", nil)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("GetMiniatureThemeByID() status = %d, want %d", w.Code, http.StatusOK)
+	}
+
+	var result models.MiniatureTheme
+	if err := json.Unmarshal(w.Body.Bytes(), &result); err != nil {
+		t.Fatalf("Failed to unmarshal response: %v", err)
+	}
+
+	if result.Name != testMiniatureTheme {
+		t.Errorf("GetMiniatureThemeByID() name = %s, want %s", result.Name, testMiniatureTheme)
+	}
+}
+
+func TestGetMiniatureThemeByID_NotFound(t *testing.T) {
+	handler, mockRepo := setupTestHandler(t)
+	router := setupTestRouter(t)
+	router.GET("/miniatures/themes/:id", handler.GetMiniatureThemeByID)
+
+	mockRepo.getMiniatureThemeByIDFunc = func(ctx context.Context, id int64) (*models.MiniatureTheme, error) {
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	w := performRequest(t, router, "GET", "/miniatures/themes/999", nil)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("GetMiniatureThemeByID() status = %d, want %d", w.Code, http.StatusNotFound)
+	}
+}
+
+func TestGetMiniatureThemeByID_InvalidID(t *testing.T) {
+	handler, _ := setupTestHandler(t)
+	router := setupTestRouter(t)
+	router.GET("/miniatures/themes/:id", handler.GetMiniatureThemeByID)
+
+	w := performRequest(t, router, "GET", "/miniatures/themes/invalid", nil)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("GetMiniatureThemeByID() status = %d, want %d", w.Code, http.StatusBadRequest)
+	}
+}
+
+func TestGetMiniatureThemeByID_RepositoryError(t *testing.T) {
+	handler, mockRepo := setupTestHandler(t)
+	router := setupTestRouter(t)
+	router.GET("/miniatures/themes/:id", handler.GetMiniatureThemeByID)
+
+	mockRepo.getMiniatureThemeByIDFunc = func(ctx context.Context, id int64) (*models.MiniatureTheme, error) {
+		return nil, errors.New("database error")
+	}
+
+	w := performRequest(t, router, "GET", "/miniatures/themes/1", nil)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("GetMiniatureThemeByID() status = %d, want %d", w.Code, http.StatusInternalServerError)
+	}
+}
+
 // =============================================================================
 // Context Propagation Tests
 // =============================================================================
@@ -840,6 +918,7 @@ func TestInvalidIDFormats(t *testing.T) {
 
 	router.GET("/projects/:id", handler.GetProjectByID)
 	router.GET("/miniatures/:id", handler.GetMiniatureByID)
+	router.GET("/miniatures/themes/:id", handler.GetMiniatureThemeByID)
 
 	// Note: Negative IDs are parseable by strconv.ParseInt, so they pass validation
 	// and get a "not found" from the repository. Only non-numeric strings fail.
@@ -856,6 +935,8 @@ func TestInvalidIDFormats(t *testing.T) {
 		{"miniature with string ID", "/miniatures/", "xyz"},
 		{"miniature with float ID", "/miniatures/", "3.14"},
 		{"miniature with special chars", "/miniatures/", "!@#"},
+		{"miniature theme with string ID", "/miniatures/themes/", "abc"},
+		{"miniature theme with float ID", "/miniatures/themes/", "1.5"},
 	}
 
 	for _, tt := range tests {

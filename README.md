@@ -144,9 +144,10 @@ Base URL: `http://localhost:8082/api/v1`
 - `GET /skills` - List all skills grouped by type
 - `GET /experience` - List work experience
 - `GET /certifications` - List certifications
-- `GET /miniatures/themes` - List miniature painting themes
-- `GET /miniatures/projects` - List all miniature projects
+- `GET /miniatures` - List all miniature projects
 - `GET /miniatures/projects/:id` - Get miniature project details
+- `GET /miniatures/themes` - List miniature painting themes
+- `GET /miniatures/themes/:id` - Get theme details with miniature projects
 
 ## Swagger Documentation
 
