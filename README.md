@@ -3,7 +3,7 @@
 ![CI](https://github.com/GunarsK-portfolio/public-api/workflows/CI/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/GunarsK-portfolio/public-api)](https://goreportcard.com/report/github.com/GunarsK-portfolio/public-api)
 [![codecov](https://codecov.io/gh/GunarsK-portfolio/public-api/graph/badge.svg?token=AX1YFMU9TA)](https://codecov.io/gh/GunarsK-portfolio/public-api)
-[![CodeRabbit](https://img.shields.io/coderabbit/prs/github/GunarsK-portfolio/public-api?label=CodeRabbit&color=FF570A)](https://coderabbit.ai)
+[![CodeRabbit](https://img.shields.io/coderabbit/prs/github/GunarsK-portfolio/public-api?label=CodeRabbit&color=2ea44f)](https://coderabbit.ai)
 
 RESTful API for public portfolio content access.
 
