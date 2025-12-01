@@ -2,7 +2,8 @@
 
 ![CI](https://github.com/GunarsK-portfolio/public-api/workflows/CI/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/GunarsK-portfolio/public-api)](https://goreportcard.com/report/github.com/GunarsK-portfolio/public-api)
-[![codecov](https://codecov.io/gh/GunarsK-portfolio/public-api/branch/main/graph/badge.svg)](https://codecov.io/gh/GunarsK-portfolio/public-api)
+[![codecov](https://codecov.io/gh/GunarsK-portfolio/public-api/graph/badge.svg?token=AX1YFMU9TA)](https://codecov.io/gh/GunarsK-portfolio/public-api)
+[![CodeRabbit](https://img.shields.io/coderabbit/prs/github/GunarsK-portfolio/public-api?label=CodeRabbit&color=FF570A)](https://coderabbit.ai)
 
 RESTful API for public portfolio content access.
 
@@ -174,4 +175,4 @@ This API is consumed by the public-web frontend to display portfolio content.
 
 ## License
 
-MIT
+[MIT](LICENSE)
