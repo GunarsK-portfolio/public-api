@@ -3,8 +3,11 @@ package main
 import (
 	"log"
 	"os"
+	"strconv"
+	"time"
 
 	commondb "github.com/GunarsK-portfolio/portfolio-common/database"
+	"github.com/GunarsK-portfolio/portfolio-common/health"
 	"github.com/GunarsK-portfolio/portfolio-common/logger"
 	"github.com/GunarsK-portfolio/portfolio-common/metrics"
 	"github.com/GunarsK-portfolio/portfolio-common/server"
@@ -45,18 +48,26 @@ func main() {
 	//nolint:staticcheck // Embedded field name required due to ambiguous fields
 	db, err := commondb.Connect(commondb.PostgresConfig{
 		Host:     cfg.DatabaseConfig.Host,
-		Port:     cfg.DatabaseConfig.Port,
+		Port:     strconv.Itoa(cfg.DatabaseConfig.Port),
 		User:     cfg.DatabaseConfig.User,
 		Password: cfg.DatabaseConfig.Password,
 		DBName:   cfg.DatabaseConfig.Name,
 		SSLMode:  cfg.DatabaseConfig.SSLMode,
-		TimeZone: "UTC",
 	})
 	if err != nil {
 		appLogger.Error("Failed to connect to database", "error", err)
 		log.Fatal("Failed to connect to database:", err)
 	}
+	defer func() {
+		if closeErr := commondb.CloseDB(db); closeErr != nil {
+			appLogger.Error("Failed to close database", "error", closeErr)
+		}
+	}()
 	appLogger.Info("Database connection established")
+
+	// Initialize health aggregator
+	healthAgg := health.NewAggregator(3 * time.Second)
+	healthAgg.Register(health.NewPostgresChecker(db))
 
 	// Initialize repository
 	repo := repository.New(db, cfg.FilesAPIURL)
@@ -71,12 +82,12 @@ func main() {
 	router.Use(metricsCollector.Middleware())
 
 	// Setup routes
-	routes.Setup(router, handler, cfg, metricsCollector)
+	routes.Setup(router, handler, cfg, metricsCollector, healthAgg)
 
 	// Start server with graceful shutdown
 	appLogger.Info("Public API ready", "port", cfg.ServiceConfig.Port, "environment", os.Getenv("ENVIRONMENT"))
 
-	serverCfg := server.DefaultConfig(cfg.ServiceConfig.Port)
+	serverCfg := server.DefaultConfig(strconv.Itoa(cfg.ServiceConfig.Port))
 	if err := server.Run(router, serverCfg, appLogger); err != nil {
 		appLogger.Error("Server error", "error", err)
 		log.Fatal("Server error:", err)
