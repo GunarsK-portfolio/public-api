@@ -49,6 +49,8 @@ definitions:
       id:
         type: integer
       images:
+        description: Computed field (populated by repository layer - requires URL
+          building)
         items:
           $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.Image'
         type: array
@@ -58,13 +60,13 @@ definitions:
         type: string
       paints:
         items:
-          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint'
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectPaint'
         type: array
       scale:
         type: string
       techniques:
         items:
-          type: string
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectTechnique'
         type: array
       theme:
         allOf:
@@ -74,6 +76,59 @@ definitions:
         type: integer
       timeSpent:
         type: number
+      updatedAt:
+        type: string
+    required:
+    - name
+    type: object
+  github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectPaint:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      miniatureProjectId:
+        type: integer
+      notes:
+        type: string
+      paint:
+        allOf:
+        - $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint'
+        description: Associations
+      paintId:
+        type: integer
+    type: object
+  github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectTechnique:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      miniatureProjectId:
+        type: integer
+      notes:
+        type: string
+      technique:
+        allOf:
+        - $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureTechnique'
+        description: Associations
+      techniqueId:
+        type: integer
+    type: object
+  github_com_GunarsK-portfolio_portfolio-common_models.MiniatureTechnique:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      difficultyLevel:
+        type: string
+      displayOrder:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
       updatedAt:
         type: string
     required:
@@ -206,6 +261,8 @@ definitions:
       id:
         type: integer
       images:
+        description: Computed field (populated by repository layer - requires URL
+          building)
         items:
           $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.Image'
         type: array
@@ -215,13 +272,13 @@ definitions:
         type: string
       paints:
         items:
-          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint'
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectPaint'
         type: array
       scale:
         type: string
       techniques:
         items:
-          type: string
+          $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectTechnique'
         type: array
       theme:
         allOf:
@@ -325,17 +382,19 @@ definitions:
   github_com_GunarsK-portfolio_public-api_internal_models.Profile:
     properties:
       avatarFile:
-        allOf:
-        - $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile'
-        description: Now exposed to JSON
+        $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile'
       avatarFileId:
         type: integer
       createdAt:
         type: string
       email:
         type: string
+      github:
+        type: string
       id:
         type: integer
+      linkedin:
+        type: string
       location:
         type: string
       name:
@@ -343,9 +402,7 @@ definitions:
       phone:
         type: string
       resumeFile:
-        allOf:
-        - $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile'
-        description: Now exposed to JSON
+        $ref: '#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile'
       resumeFileId:
         type: integer
       tagline:
@@ -456,21 +513,6 @@ paths:
       summary: Get all work experience
       tags:
       - experience
-  /health:
-    get:
-      description: Check if service is healthy
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Health check
-      tags:
-      - health
   /miniatures:
     get:
       description: Get list of all miniature painting projects with images

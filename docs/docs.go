@@ -79,29 +79,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/health": {
-            "get": {
-                "description": "Check if service is healthy",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "health"
-                ],
-                "summary": "Health check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/miniatures": {
             "get": {
                 "description": "Get list of all miniature painting projects with images",
@@ -509,6 +486,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "images": {
+                    "description": "Computed field (populated by repository layer - requires URL building)",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.Image"
@@ -523,7 +501,7 @@ const docTemplate = `{
                 "paints": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint"
+                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectPaint"
                     }
                 },
                 "scale": {
@@ -532,7 +510,7 @@ const docTemplate = `{
                 "techniques": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectTechnique"
                     }
                 },
                 "theme": {
@@ -548,6 +526,91 @@ const docTemplate = `{
                 },
                 "timeSpent": {
                     "type": "number"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectPaint": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "miniatureProjectId": {
+                    "type": "integer"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "paint": {
+                    "description": "Associations",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint"
+                        }
+                    ]
+                },
+                "paintId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectTechnique": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "miniatureProjectId": {
+                    "type": "integer"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "technique": {
+                    "description": "Associations",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureTechnique"
+                        }
+                    ]
+                },
+                "techniqueId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_GunarsK-portfolio_portfolio-common_models.MiniatureTechnique": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "difficultyLevel": {
+                    "type": "string"
+                },
+                "displayOrder": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -749,6 +812,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "images": {
+                    "description": "Computed field (populated by repository layer - requires URL building)",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.Image"
@@ -763,7 +827,7 @@ const docTemplate = `{
                 "paints": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniaturePaint"
+                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectPaint"
                     }
                 },
                 "scale": {
@@ -772,7 +836,7 @@ const docTemplate = `{
                 "techniques": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.MiniatureProjectTechnique"
                     }
                 },
                 "theme": {
@@ -935,12 +999,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "avatarFile": {
-                    "description": "Now exposed to JSON",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile"
-                        }
-                    ]
+                    "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile"
                 },
                 "avatarFileId": {
                     "type": "integer"
@@ -951,8 +1010,14 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
+                "github": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
+                },
+                "linkedin": {
+                    "type": "string"
                 },
                 "location": {
                     "type": "string"
@@ -964,12 +1029,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "resumeFile": {
-                    "description": "Now exposed to JSON",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile"
-                        }
-                    ]
+                    "$ref": "#/definitions/github_com_GunarsK-portfolio_portfolio-common_models.StorageFile"
                 },
                 "resumeFileId": {
                     "type": "integer"
