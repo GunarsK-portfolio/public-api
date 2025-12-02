@@ -17,7 +17,7 @@ type Config struct {
 func Load() *Config {
 	cfg := &Config{
 		DatabaseConfig: common.NewDatabaseConfig(),
-		ServiceConfig:  common.NewServiceConfig("8082"),
+		ServiceConfig:  common.NewServiceConfig(8082),
 		FilesAPIURL:    common.GetEnvRequired("FILES_API_URL"),
 	}
 
