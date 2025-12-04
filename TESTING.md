@@ -33,7 +33,7 @@ go test -v -run Miniature ./internal/handlers/
 **`handler_test.go`** - 36 tests
 
 | Category | Tests | Coverage |
-|----------|-------|----------|
+| -------- | ----- | -------- |
 | Profile | 4 | GetProfile + error cases |
 | Work Experience | 3 | GetAll + error cases |
 | Certifications | 3 | GetAll + error cases |

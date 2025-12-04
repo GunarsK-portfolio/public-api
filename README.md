@@ -159,7 +159,7 @@ When running, Swagger UI is available at:
 ## Environment Variables
 
 | Variable | Description | Example |
-|----------|-------------|---------|
+| -------- | ----------- | ------- |
 | `PORT` | Server port | `8082` |
 | `DB_HOST` | PostgreSQL host | `localhost` |
 | `DB_PORT` | PostgreSQL port | `5432` |
