@@ -17,7 +17,7 @@ RESTful API for public portfolio content access.
 
 ## Tech Stack
 
-- **Language**: Go 1.25.3
+- **Language**: Go 1.26.4
 - **Framework**: Gin
 - **Database**: PostgreSQL (GORM)
 - **Storage**: Files API (for images/documents)
@@ -25,7 +25,7 @@ RESTful API for public portfolio content access.
 
 ## Prerequisites
 
-- Go 1.25+
+- Go 1.26+
 - Node.js 22+ and npm 11+
 - PostgreSQL (or use Docker Compose)
 - Files API running (or use Docker Compose)
