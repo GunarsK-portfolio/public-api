@@ -161,12 +161,14 @@ jobs:
       - name: Create E2E .env
         working-directory: e2e-tests
         run: |
-          echo "TEST_PUBLIC_WEB_URL=${{ env.PUBLIC_WEB_URL }}" > .env
-          echo "TEST_PUBLIC_API_URL=${{ env.PUBLIC_API_URL }}" >> .env
-          echo "TEST_HEADLESS=true" >> .env
-          echo "TEST_TIMEOUT=300000" >> .env
-          echo "TEST_BROWSER=chromium" >> .env
-          echo "TEST_IGNORE_HTTPS_ERRORS=true" >> .env
+          {
+            echo "TEST_PUBLIC_WEB_URL=${{ env.PUBLIC_WEB_URL }}"
+            echo "TEST_PUBLIC_API_URL=${{ env.PUBLIC_API_URL }}"
+            echo "TEST_HEADLESS=true"
+            echo "TEST_TIMEOUT=300000"
+            echo "TEST_BROWSER=chromium"
+            echo "TEST_IGNORE_HTTPS_ERRORS=true"
+          } > .env
 
       - name: Run E2E tests
         working-directory: e2e-tests
